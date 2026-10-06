@@ -4,6 +4,9 @@ Run: python3 build.py 0.6   (the version goes into the offline cache name)"""
 import sys,re
 ver=sys.argv[1] if len(sys.argv)>1 else 'dev'
 s=open('game.html').read().replace('<title>Pocket Blox</title>\n','',1)
+# The public build never contains the private test language.
+s=re.sub(r'/\*HR-START\*/.*?/\*HR-END\*/','',s,flags=re.S)
+assert "hr:{" not in s
 head='''<!doctype html>
 <html lang="en">
 <head>

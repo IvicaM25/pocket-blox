@@ -95,6 +95,10 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
 .chapter .chtitle{font-family:var(--f-display);font-size:10px;color:var(--accent);margin:0}
 .chapter .chnote{font-size:14px;line-height:1;margin:0;color:var(--lcd-mid)}
 .lbtn:disabled{opacity:.4;cursor:default}
+.langs{display:flex;flex-direction:column;gap:10px;width:100%;max-width:240px}
+.langs .lbtn{font-size:14px;padding:10px 12px;text-align:left}
+.langs .lbtn.sel{border-color:var(--accent);color:var(--accent);background:rgba(255,207,90,.08)}
+.langbtn{font-size:10px;border-width:1px;opacity:.85}
 .shop{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;width:100%}
 .shopcard{display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--lcd-mid);color:var(--lcd-ink);padding:3px 2px;cursor:pointer;font-family:var(--f-display);font-size:8px;letter-spacing:.04em;min-width:0}
 .shopcard .ic{height:30px;width:100%;display:flex;align-items:center;justify-content:center}
@@ -164,12 +168,12 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
     <div class="bezel-top"><span class="led" aria-hidden="true"></span><span>POWER</span><span class="grow"></span><span>COLOR 8×8</span></div>
     <div class="screen" id="screen">
       <div class="hud">
-        <div>SCORE<b id="score">0</b></div>
+        <div><span data-t="SCORE">SCORE</span><b id="score">0</b></div>
         <div class="combo" id="combo">COMBO x2</div>
-        <div class="right">HI<b id="hi">0</b></div>
+        <div class="right"><span data-t="HI">HI</span><b id="hi">0</b></div>
       </div>
       <div class="board" id="board"></div>
-      <div class="tools"><span id="hint">DRAG A BLOCK</span><button class="rot" id="rotBtn" aria-label="Rotate a block">↻ ROTATE <span class="pips" id="pips"></span></button></div>
+      <div class="tools"><span id="hint">DRAG A BLOCK</span><button class="rot" id="rotBtn" aria-label="Rotate a block">↻ <span data-t="ROTATE">ROTATE</span> <span class="pips" id="pips"></span></button></div>
       <div class="tray" id="tray"></div>
       <div class="petbar">
         <div class="pet-wrap" id="petwrap"><canvas id="pet" width="24" height="24" aria-label="Pet"></canvas></div>
@@ -182,11 +186,16 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
 
       <div class="overlay" id="ovTitle">
         <h1>POCKET<br>BLOX</h1>
-        <p>Fill a row or column to clear it.<br>Clear lines to feed Pixo.</p>
+        <p data-t="Fill a row or column to clear it.<br>Clear lines to feed Pixo.">Fill a row or column to clear it.<br>Clear lines to feed Pixo.</p>
         <div class="scores" id="hiList"></div>
-        <div class="press">PRESS START</div>
+        <div class="press" data-t="PRESS START">PRESS START</div>
         <button class="lbtn homebtn" data-home="1">⌂ PIXO'S ROOM</button>
-        <button class="lbtn fbbtn" data-fb="1">✎ FEEDBACK · GET +1 ↻</button>
+        <button class="lbtn fbbtn" data-fb="1" data-t="✎ FEEDBACK · GET +1 ↻">✎ FEEDBACK · GET +1 ↻</button>
+        <button class="lbtn langbtn" data-lang="1" data-t="🌐 LANGUAGE">🌐 LANGUAGE</button>
+      </div>
+      <div class="overlay" id="ovLang" hidden>
+        <h2 data-t="CHOOSE LANGUAGE">CHOOSE LANGUAGE</h2>
+        <div class="langs" id="langs"></div>
       </div>
       <div class="overlay home" id="ovHome" hidden>
         <div class="homehead"><span id="homeTitle">PIXO'S ROOM</span><span id="coinsLbl">COINS 0</span></div>
@@ -194,57 +203,57 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
         <canvas id="room" width="128" height="112" aria-label="Pixo's room. Tap Pixo or your items."></canvas>
         <p class="bubble homesay" id="homeSay">...</p>
         <div class="chapter" id="chapter" hidden>
-          <p class="chtitle">★ ROOM COMPLETE! WHAT'S NEXT? ★</p>
-          <div class="btnrow"><button class="lbtn" id="goFlat">NEW FLAT · 300</button><button class="lbtn" id="goBeach" disabled>BEACH · SOON</button></div>
-          <p class="chnote">Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.</p>
+          <p class="chtitle" data-t="★ ROOM COMPLETE! WHAT'S NEXT? ★">★ ROOM COMPLETE! WHAT'S NEXT? ★</p>
+          <div class="btnrow"><button class="lbtn" id="goFlat">NEW FLAT · 300</button><button class="lbtn" id="goBeach" disabled data-t="BEACH · SOON">BEACH · SOON</button></div>
+          <p class="chnote" data-t="Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.">Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.</p>
         </div>
         <div class="shop" id="shop"></div>
-        <div class="shopinfo"><span id="shopInfo">Tap an item to see it.</span><button class="lbtn" id="buyBtn" hidden>BUY</button></div>
-        <button class="lbtn" id="homeBack">BACK</button>
+        <div class="shopinfo"><span id="shopInfo">Tap an item to see it.</span><button class="lbtn" id="buyBtn" hidden data-t="BUY">BUY</button></div>
+        <button class="lbtn" id="homeBack" data-t="BACK">BACK</button>
       </div>
       <div class="overlay" id="ovFb" hidden>
         <form class="fb" id="fbForm" novalidate>
-          <h2>FEEDBACK</h2>
-          <label>HOW FUN IS IT?</label>
+          <h2 data-t="FEEDBACK">FEEDBACK</h2>
+          <label data-t="HOW FUN IS IT?">HOW FUN IS IT?</label>
           <div class="hearts" id="hearts"></div>
-          <label>WHAT SHOULD WE IMPROVE?</label>
+          <label data-t="WHAT SHOULD WE IMPROVE?">WHAT SHOULD WE IMPROVE?</label>
           <div class="chips" id="chips"></div>
-          <textarea id="fbText" maxlength="500" placeholder="Tell us in a few words..."></textarea>
+          <textarea id="fbText" maxlength="500" placeholder="Write in your own language, any language is welcome!" data-tp="Write in your own language, any language is welcome!"></textarea>
           <div class="note" id="fbNote">Reward: +1 rotate in your next game</div>
-          <div class="btnrow"><button class="lbtn" type="submit" id="fbSend">SEND</button><button class="lbtn" type="button" id="fbClose">BACK</button></div>
+          <div class="btnrow"><button class="lbtn" type="submit" id="fbSend" data-t="SEND">SEND</button><button class="lbtn" type="button" id="fbClose" data-t="BACK">BACK</button></div>
         </form>
       </div>
       <div class="overlay" id="ovAd" hidden>
         <div class="adbox" id="adOffer">
           <h2 id="adTitle">OUT OF ROTATES</h2>
-          <p>Watch a short video<br>to get 1 rotate.</p>
-          <div class="btnrow"><button class="lbtn" id="adYes">▶ WATCH (5s)</button><button class="lbtn" id="adNo">NO THANKS</button></div>
+          <p data-t="Watch a short video<br>to get 1 rotate.">Watch a short video<br>to get 1 rotate.</p>
+          <div class="btnrow"><button class="lbtn" id="adYes" data-t="▶ WATCH (5s)">▶ WATCH (5s)</button><button class="lbtn" id="adNo" data-t="NO THANKS">NO THANKS</button></div>
         </div>
         <div class="adbox" id="adPlay" hidden>
-          <p>VIDEO</p>
+          <p data-t="VIDEO">VIDEO</p>
           <div class="adcount" id="adCount">5</div>
           <div class="adbar"><i id="adBar"></i></div>
-          <p style="font-size:16px">(placeholder for a real ad)</p>
+          <p style="font-size:16px" data-t="(placeholder for a real ad)">(placeholder for a real ad)</p>
         </div>
       </div>
       <div class="overlay" id="ovPause" hidden>
-        <h2>PAUSE</h2>
-        <div class="press">START TO RESUME</div>
+        <h2 data-t="PAUSE">PAUSE</h2>
+        <div class="press" data-t="START TO RESUME">START TO RESUME</div>
       </div>
       <div class="overlay" id="ovOver" hidden>
-        <h2>GAME OVER</h2>
+        <h2 data-t="GAME OVER">GAME OVER</h2>
         <p id="overScore">SCORE 0</p>
         <p id="overCoins"></p>
         <div id="entry" hidden>
-          <p style="margin-bottom:6px">NEW HIGH SCORE!<br>ENTER YOUR NAME</p>
+          <p style="margin-bottom:6px" data-t="NEW HIGH SCORE!<br>ENTER YOUR NAME">NEW HIGH SCORE!<br>ENTER YOUR NAME</p>
           <div class="initials" id="initials"></div>
           <div style="margin-top:10px"><button class="lbtn" id="okBtn">OK</button></div>
         </div>
         <div id="overRest">
           <div class="scores" id="hiList2"></div>
-          <div class="press" style="margin-top:8px">PRESS START</div>
+          <div class="press" style="margin-top:8px" data-t="PRESS START">PRESS START</div>
           <button class="lbtn homebtn" data-home="1">⌂ PIXO'S ROOM</button>
-        <button class="lbtn fbbtn" data-fb="1">✎ FEEDBACK · GET +1 ↻</button>
+        <button class="lbtn fbbtn" data-fb="1" data-t="✎ FEEDBACK · GET +1 ↻">✎ FEEDBACK · GET +1 ↻</button>
         </div>
       </div>
     </div>
@@ -325,6 +334,111 @@ const $=id=>document.getElementById(id);
 const boardEl=$('board'),trayEl=$('tray'),screenEl=$('screen');
 const store={get(k,d){try{const v=localStorage.getItem('pb_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('pb_'+k,JSON.stringify(v))}catch(e){}}};
 
+/* ---------- languages: English text is the key; missing entries fall back to English ---------- */
+let LANG=store.get('lang',null);
+const LANGS={en:'🇬🇧 ENGLISH',es:'🇪🇸 ESPAÑOL',de:'🇩🇪 DEUTSCH'};
+const I18N={
+es:{
+'SCORE':'PUNTOS','HI':'RÉCORD','ROTATE':'GIRAR','Fill a row or column to clear it.<br>Clear lines to feed Pixo.':'Llena una fila o columna para borrarla.<br>Borra líneas para alimentar a Pixo.',
+'PRESS START':'PULSA START','START TO RESUME':'START PARA SEGUIR','✎ FEEDBACK · GET +1 ↻':'✎ OPINIÓN · GANA +1 ↻',
+"★ ROOM COMPLETE! WHAT'S NEXT? ★":'★ ¡CUARTO COMPLETO! ¿Y AHORA? ★','NEW FLAT · 300':'PISO NUEVO · 300','BEACH · SOON':'PLAYA · PRONTO',
+'Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.':'Alquiler: 40 monedas por semana. La cama, el reloj, la lámpara de lava y el póster se mudan también.',
+'BUY':'COMPRAR','BACK':'VOLVER','SEND':'ENVIAR','FEEDBACK':'OPINIÓN','HOW FUN IS IT?':'¿CUÁNTO TE DIVIERTE?','WHAT SHOULD WE IMPROVE?':'¿QUÉ MEJORAMOS?',
+'Write in your own language, any language is welcome!':'Escribe en tu propio idioma, ¡cualquier idioma vale!',
+'Watch a short video<br>to get 1 rotate.':'Mira un vídeo corto<br>y gana 1 giro.','▶ WATCH (5s)':'▶ VER (5s)','NO THANKS':'NO, GRACIAS','VIDEO':'VÍDEO','(placeholder for a real ad)':'(aquí irá un anuncio real)',
+'PAUSE':'PAUSA','GAME OVER':'FIN DEL JUEGO','NEW HIGH SCORE!<br>ENTER YOUR NAME':'¡NUEVO RÉCORD!<br>ESCRIBE TU NOMBRE','OK':'OK','CHOOSE LANGUAGE':'ELIGE IDIOMA','🌐 LANGUAGE':'🌐 IDIOMA',
+'TAP A BLOCK TO TURN':'TOCA UNA PIEZA PARA GIRAR','NEED A TURN? TAP ↻':'¿UN GIRO? TOCA ↻','DRAG A BLOCK':'ARRASTRA UNA PIEZA','COMBO':'COMBO',
+"⌂ PIXO'S HOME":'⌂ CASA DE PIXO','COINS':'MONEDAS','SOUND ON':'SONIDO SÍ','SOUND OFF':'SONIDO NO','BONUS +{n} ↻':'BONUS +{n} ↻',
+"Let's go!":'¡Vamos!','{n} LINES! +{g}':'¡{n} LÍNEAS! +{g}','I hatched!!':'¡¡He nacido!!','I grew up!':'¡He crecido!','NEW ROOM ITEMS!':'¡COSAS NUEVAS!',
+'YUM!':'¡ÑAM!','NOM NOM':'ÑAM ÑAM','MORE!':'¡MÁS!','TASTY!':'¡RICO!','Hungry...':'Tengo hambre...','TRY ↻ ROTATE!':'¡PRUEBA ↻ GIRAR!','Turn a block!':'¡Gira una pieza!',
+'STUCK!':'¡ATASCADO!','OUT OF ROTATES':'SIN GIROS','+1 ROTATE':'+1 GIRO','Thanks! Turn it!':'¡Gracias! ¡Gíralo!','NO ROTATES LEFT':'NO QUEDAN GIROS','Good game!':'¡Buena partida!',
+'Hi!':'¡Hola!','Hey!':'¡Eh!','SECRET FOUND!':'¡SECRETO!','RENT PAID -40':'ALQUILER PAGADO -40','NO SCORES YET':'AÚN NO HAY RÉCORDS',
+'Warm me up... ({n} lines)':'Dame calor... ({n} líneas)','Ready!':'¡Listo!',"Let's play!":'¡A jugar!','Feed me lines!':'¡Dame líneas!',
+'EGG':'HUEVO','BABY':'BEBÉ','KID':'NIÑO','TEEN':'JOVEN','HERO':'HÉROE',
+'Yum! That was tasty!':'¡Ñam! ¡Qué rico!','Good morning!':'¡Buenos días!','Nom nom... busy eating!':'Ñam ñam... ¡estoy comiendo!','Do you know what day it is? Hehe!':'¿Sabes qué día es hoy? ¡Jeje!',
+'Hehe!':'¡Jeje!','I love my home!':'¡Me encanta mi casa!','Play with me!':'¡Juega conmigo!','More stuff please!':'¡Más cosas, porfa!',
+'Ooh, a show!':'¡Uy, una serie!','TV off.':'Tele apagada.','So groovy...':'Qué guay...','Lamp off.':'Lámpara apagada.','Sparkly!':'¡Brillan!','Lights still.':'Luces quietas.',
+'La la la! Dance time!':'¡La la la! ¡A bailar!','Friday night groove!':'¡Marcha de viernes!','Smooth vinyl sound...':'Qué bien suena el vinilo...','Hello? ...Wrong number!':'¿Diga? ...¡Se han equivocado!',
+"IT'S {t}":'SON LAS {t}','Zzz... nap time':'Zzz... hora de la siesta','So many snacks...':'Cuántos snacks...','Ahh... NOW I can face Monday!':'Ahh... ¡AHORA puedo con el lunes!','Mmm, coffee!':'¡Mmm, café!',
+'Working from home... sort of.':'Trabajando desde casa... más o menos.','Ahh, cool breeze!':'¡Ahh, qué fresquito!','Whoosh!':'¡Fiuuu!','Fan off.':'Ventilador apagado.',
+'Warm and cozy!':'¡Calentito!','A bit warm, no?':'Hace un poco de calor, ¿no?','Heater off.':'Estufa apagada.','Blub...':'Blub...','Blub blub!':'¡Blub blub!','So comfy...':'Qué cómodo...',
+'Snow is falling...':'Está nevando...','Rainy day...':'Día de lluvia...','City lights!':'¡Luces de la ciudad!','Busy city out there!':'¡Cuánto movimiento ahí fuera!','Look, stars!':'¡Mira, estrellas!','Nice day outside!':'¡Hace un día precioso!',
+'So soft!':'¡Qué suave!','Grow, little plant!':'¡Crece, plantita!','One day I will fly!':'¡Algún día volaré!','It made the trip!':'¡Llegó entero!','Ready for any weather!':'¡Listo para cualquier tiempo!',
+"PIXO'S ROOM":'CUARTO DE PIXO',"PIXO'S FLAT":'PISO DE PIXO',
+'RENT DUE · 40 COINS · PLAY TO EARN':'ALQUILER PENDIENTE · 40 MONEDAS · JUEGA PARA GANAR','RENT PAID · {d} DAY LEFT':'ALQUILER PAGADO · QUEDA {d} DÍA','RENT PAID · {d} DAYS LEFT':'ALQUILER PAGADO · QUEDAN {d} DÍAS',
+'Pay the rent before buying new things.':'Paga el alquiler antes de comprar cosas nuevas.','Tap an item to see it.':'Toca un objeto para verlo.','in your home. Tap it there!':'ya está en tu casa. ¡Tócalo allí!',
+'Pixo must reach LV{n}':'Pixo necesita NV{n}','Rent is due (40 coins). Play a game to earn coins.':'Toca pagar el alquiler (40 monedas). Juega para ganar monedas.',
+'{p} coins (need {m} more)':'{p} monedas (faltan {m})','{p} coins':'{p} monedas','Pixo eats it right away':'Pixo se lo come al momento','for the aquarium':'para el acuario','OWNED':'TUYO',
+'Nom nom... still eating this one!':'Ñam ñam... ¡aún me estoy comiendo esto!',"We don't have any fish yet!":'¡Todavía no tenemos peces!','A cake?! For me?!':'¡¿Una tarta?! ¡¿Para mí?!','Food! For me?!':'¡Comida! ¡¿Para mí?!',
+'The fish is munching!':'¡El pez está comiendo!','I love it!':'¡Me encanta!','Wow, thank you!':'¡Guau, gracias!','Best home ever!':'¡La mejor casa del mundo!',
+'PIXO IS HAPPY! +{n} ↻ NEXT GAME':'¡PIXO ESTÁ FELIZ! +{n} ↻ PRÓXIMA PARTIDA','You remembered my birthday!!':'¡¡Te acordaste de mi cumple!!','How did you know?!':'¡¿Cómo lo sabías?!','You read my mind! Thank you!':'¡Me has leído la mente! ¡Gracias!',
+"Moving costs 300 coins... let's play some more!":'La mudanza cuesta 300 monedas... ¡juguemos un poco más!','SURE? TAP AGAIN':'¿SEGURO? TOCA OTRA VEZ','MOVED IN! RENT PAID 7 DAYS':'¡MUDADO! ALQUILER PAGADO 7 DÍAS',
+'Our new flat! My bed, clock, lamp and poster came along!':'¡Nuestro piso nuevo! ¡Mi cama, reloj, lámpara y póster vinieron conmigo!',
+'I saved {n} coins for you!':'¡Te guardé {n} monedas!','Rent is due... we need 40 coins.':'Toca pagar el alquiler... necesitamos 40 monedas.',"My room is perfect... what's next?":'Mi cuarto es perfecto... ¿y ahora qué?',
+'Welcome home!':'¡Bienvenido a casa!','My room is empty... buy me something?':'Mi cuarto está vacío... ¿me compras algo?',
+'My tummy is rumbling... is it breakfast time?':'Me suenan las tripas... ¿es hora de desayunar?',"It's noon... I could really eat something!":'Es mediodía... ¡me comería algo!',
+"I'm getting sleepy... a bed would be nice.":'Me está entrando sueño... una cama me vendría bien.',"It's so dark in here... I'm a little scared.":'Qué oscuro está aquí... me da un poco de miedo.',
+'Thanks again! Next reward unlocks tomorrow.':'¡Gracias otra vez! El próximo premio, mañana.','Reward: +1 rotate in your next game':'Premio: +1 giro en tu próxima partida',
+'Tap the hearts to rate the fun.':'Toca los corazones para puntuar.','Pick a topic or write a few words.':'Elige un tema o escribe unas palabras.','Sending...':'Enviando...',
+'Thank you!!':'¡¡Gracias!!','THANKS! +1 ↻ NEXT GAME':'¡GRACIAS! +1 ↻ PRÓXIMA PARTIDA','THANKS!':'¡GRACIAS!','SAVED ON THIS DEVICE':'GUARDADO EN ESTE MÓVIL',
+'TOO HARD':'MUY DIFÍCIL','TOO EASY':'MUY FÁCIL','CONTROLS':'CONTROLES','LOOKS':'GRÁFICOS','SOUNDS':'SONIDOS','PIXO':'PIXO','ADS':'ANUNCIOS','OTHER':'OTRO',
+'RUG':'ALFOMBRA','PLANT':'PLANTA','ROCKET POSTER':'PÓSTER COHETE','WALL CLOCK':'RELOJ','PHONE':'TELÉFONO','BOOMBOX':'RADIOCASETE','LAVA LAMP':'LÁMPARA DE LAVA','BED':'CAMA','OLD TV':'TELE ANTIGUA','STAR LIGHTS':'LUCES','BREAKFAST':'DESAYUNO','LUNCH':'COMIDA',
+'RECORD PLAYER':'TOCADISCOS','DESK + COMPUTER':'ESCRITORIO + ORDENADOR','FRIDGE':'NEVERA','COFFEE MACHINE':'CAFETERA','FAN':'VENTILADOR','SOFA':'SOFÁ','UMBRELLA':'PARAGUAS','AQUARIUM':'ACUARIO','HEATER':'ESTUFA','FISH FOOD':'COMIDA PECES','CAKE':'TARTA'
+},
+de:{
+'SCORE':'PUNKTE','HI':'REKORD','ROTATE':'DREHEN','Fill a row or column to clear it.<br>Clear lines to feed Pixo.':'Fülle eine Reihe oder Spalte, um sie zu leeren.<br>Leere Linien, um Pixo zu füttern.',
+'PRESS START':'DRÜCK START','START TO RESUME':'START ZUM WEITERSPIELEN','✎ FEEDBACK · GET +1 ↻':'✎ FEEDBACK · +1 ↻ HOLEN',
+"★ ROOM COMPLETE! WHAT'S NEXT? ★":'★ ZIMMER FERTIG! WIE GEHT ES WEITER? ★','NEW FLAT · 300':'NEUE WOHNUNG · 300','BEACH · SOON':'STRAND · BALD',
+'Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.':'Miete: 40 Münzen pro Woche. Bett, Uhr, Lavalampe und Poster ziehen mit um.',
+'BUY':'KAUFEN','BACK':'ZURÜCK','SEND':'SENDEN','FEEDBACK':'FEEDBACK','HOW FUN IS IT?':'WIE VIEL SPASS MACHT ES?','WHAT SHOULD WE IMPROVE?':'WAS SOLLEN WIR VERBESSERN?',
+'Write in your own language, any language is welcome!':'Schreib in deiner eigenen Sprache, jede Sprache ist willkommen!',
+'Watch a short video<br>to get 1 rotate.':'Schau ein kurzes Video<br>für 1 Drehung.','▶ WATCH (5s)':'▶ ANSEHEN (5s)','NO THANKS':'NEIN, DANKE','VIDEO':'VIDEO','(placeholder for a real ad)':'(hier kommt echte Werbung hin)',
+'PAUSE':'PAUSE','GAME OVER':'SPIEL VORBEI','NEW HIGH SCORE!<br>ENTER YOUR NAME':'NEUER REKORD!<br>GIB DEINEN NAMEN EIN','OK':'OK','CHOOSE LANGUAGE':'SPRACHE WÄHLEN','🌐 LANGUAGE':'🌐 SPRACHE',
+'TAP A BLOCK TO TURN':'TIPP EINEN BLOCK ZUM DREHEN','NEED A TURN? TAP ↻':'DREHEN? TIPP ↻','DRAG A BLOCK':'ZIEH EINEN BLOCK','COMBO':'KOMBO',
+"⌂ PIXO'S HOME":'⌂ PIXOS ZUHAUSE','COINS':'MÜNZEN','SOUND ON':'TON AN','SOUND OFF':'TON AUS','BONUS +{n} ↻':'BONUS +{n} ↻',
+"Let's go!":'Los geht’s!','{n} LINES! +{g}':'{n} LINIEN! +{g}','I hatched!!':'Ich bin geschlüpft!!','I grew up!':'Ich bin gewachsen!','NEW ROOM ITEMS!':'NEUE SACHEN!',
+'YUM!':'MJAM!','NOM NOM':'MAMPF','MORE!':'MEHR!','TASTY!':'LECKER!','Hungry...':'Hunger...','TRY ↻ ROTATE!':'PROBIER ↻ DREHEN!','Turn a block!':'Dreh einen Block!',
+'STUCK!':'FESTGEFAHREN!','OUT OF ROTATES':'KEINE DREHUNGEN','+1 ROTATE':'+1 DREHUNG','Thanks! Turn it!':'Danke! Dreh ihn!','NO ROTATES LEFT':'KEINE DREHUNGEN MEHR','Good game!':'Gutes Spiel!',
+'Hi!':'Hallo!','Hey!':'Hey!','SECRET FOUND!':'GEHEIMNIS!','RENT PAID -40':'MIETE BEZAHLT -40','NO SCORES YET':'NOCH KEINE REKORDE',
+'Warm me up... ({n} lines)':'Wärm mich auf... ({n} Linien)','Ready!':'Bereit!',"Let's play!":'Lass uns spielen!','Feed me lines!':'Füttere mich mit Linien!',
+'EGG':'EI','BABY':'BABY','KID':'KIND','TEEN':'TEEN','HERO':'HELD',
+'Yum! That was tasty!':'Mjam! Das war lecker!','Good morning!':'Guten Morgen!','Nom nom... busy eating!':'Mampf... ich esse gerade!','Do you know what day it is? Hehe!':'Weißt du, welcher Tag heute ist? Hehe!',
+'Hehe!':'Hehe!','I love my home!':'Ich liebe mein Zuhause!','Play with me!':'Spiel mit mir!','More stuff please!':'Mehr Sachen, bitte!',
+'Ooh, a show!':'Oh, eine Sendung!','TV off.':'Fernseher aus.','So groovy...':'So cool...','Lamp off.':'Lampe aus.','Sparkly!':'Es funkelt!','Lights still.':'Lichter still.',
+'La la la! Dance time!':'La la la! Tanzzeit!','Friday night groove!':'Freitagabend-Groove!','Smooth vinyl sound...':'Schöner Vinyl-Sound...','Hello? ...Wrong number!':'Hallo? ...Falsch verbunden!',
+"IT'S {t}":'ES IST {t}','Zzz... nap time':'Zzz... Nickerchen','So many snacks...':'So viele Snacks...','Ahh... NOW I can face Monday!':'Ahh... JETZT schaffe ich den Montag!','Mmm, coffee!':'Mmm, Kaffee!',
+'Working from home... sort of.':'Homeoffice... so halbwegs.','Ahh, cool breeze!':'Ahh, schön kühl!','Whoosh!':'Wusch!','Fan off.':'Ventilator aus.',
+'Warm and cozy!':'Warm und gemütlich!','A bit warm, no?':'Etwas warm, oder?','Heater off.':'Heizung aus.','Blub...':'Blub...','Blub blub!':'Blub blub!','So comfy...':'So bequem...',
+'Snow is falling...':'Es schneit...','Rainy day...':'Regentag...','City lights!':'Lichter der Stadt!','Busy city out there!':'Draußen ist viel los!','Look, stars!':'Schau, Sterne!','Nice day outside!':'Schöner Tag draußen!',
+'So soft!':'So weich!','Grow, little plant!':'Wachse, kleine Pflanze!','One day I will fly!':'Eines Tages fliege ich!','It made the trip!':'Hat den Umzug überlebt!','Ready for any weather!':'Bereit für jedes Wetter!',
+"PIXO'S ROOM":'PIXOS ZIMMER',"PIXO'S FLAT":'PIXOS WOHNUNG',
+'RENT DUE · 40 COINS · PLAY TO EARN':'MIETE FÄLLIG · 40 MÜNZEN · SPIEL UND VERDIENE','RENT PAID · {d} DAY LEFT':'MIETE BEZAHLT · NOCH {d} TAG','RENT PAID · {d} DAYS LEFT':'MIETE BEZAHLT · NOCH {d} TAGE',
+'Pay the rent before buying new things.':'Zahl erst die Miete, dann kannst du einkaufen.','Tap an item to see it.':'Tipp auf einen Gegenstand.','in your home. Tap it there!':'schon bei dir zu Hause. Tipp ihn dort an!',
+'Pixo must reach LV{n}':'Pixo braucht LV{n}','Rent is due (40 coins). Play a game to earn coins.':'Die Miete ist fällig (40 Münzen). Spiel, um Münzen zu verdienen.',
+'{p} coins (need {m} more)':'{p} Münzen (noch {m})','{p} coins':'{p} Münzen','Pixo eats it right away':'Pixo isst es sofort','for the aquarium':'fürs Aquarium','OWNED':'GEKAUFT',
+'Nom nom... still eating this one!':'Mampf... ich esse noch!',"We don't have any fish yet!":'Wir haben noch keine Fische!','A cake?! For me?!':'Eine Torte?! Für mich?!','Food! For me?!':'Essen! Für mich?!',
+'The fish is munching!':'Der Fisch frisst!','I love it!':'Ich liebe es!','Wow, thank you!':'Wow, danke!','Best home ever!':'Das beste Zuhause der Welt!',
+'PIXO IS HAPPY! +{n} ↻ NEXT GAME':'PIXO IST GLÜCKLICH! +{n} ↻ NÄCHSTES SPIEL','You remembered my birthday!!':'Du hast an meinen Geburtstag gedacht!!','How did you know?!':'Woher wusstest du das?!','You read my mind! Thank you!':'Du kannst Gedanken lesen! Danke!',
+"Moving costs 300 coins... let's play some more!":'Der Umzug kostet 300 Münzen... spielen wir noch etwas!','SURE? TAP AGAIN':'SICHER? NOCHMAL TIPPEN','MOVED IN! RENT PAID 7 DAYS':'EINGEZOGEN! MIETE 7 TAGE BEZAHLT',
+'Our new flat! My bed, clock, lamp and poster came along!':'Unsere neue Wohnung! Bett, Uhr, Lampe und Poster sind mitgekommen!',
+'I saved {n} coins for you!':'Ich habe {n} Münzen für dich gespart!','Rent is due... we need 40 coins.':'Die Miete ist fällig... wir brauchen 40 Münzen.',"My room is perfect... what's next?":'Mein Zimmer ist perfekt... was nun?',
+'Welcome home!':'Willkommen zu Hause!','My room is empty... buy me something?':'Mein Zimmer ist leer... kaufst du mir was?',
+'My tummy is rumbling... is it breakfast time?':'Mein Bauch knurrt... ist Frühstückszeit?',"It's noon... I could really eat something!":'Es ist Mittag... ich könnte was essen!',
+"I'm getting sleepy... a bed would be nice.":'Ich werde müde... ein Bett wäre schön.',"It's so dark in here... I'm a little scared.":'Es ist so dunkel hier... ich habe etwas Angst.',
+'Thanks again! Next reward unlocks tomorrow.':'Nochmal danke! Die nächste Belohnung gibt es morgen.','Reward: +1 rotate in your next game':'Belohnung: +1 Drehung im nächsten Spiel',
+'Tap the hearts to rate the fun.':'Tipp auf die Herzen zum Bewerten.','Pick a topic or write a few words.':'Wähl ein Thema oder schreib ein paar Worte.','Sending...':'Wird gesendet...',
+'Thank you!!':'Danke!!','THANKS! +1 ↻ NEXT GAME':'DANKE! +1 ↻ NÄCHSTES SPIEL','THANKS!':'DANKE!','SAVED ON THIS DEVICE':'AUF DIESEM GERÄT GESPEICHERT',
+'TOO HARD':'ZU SCHWER','TOO EASY':'ZU LEICHT','CONTROLS':'STEUERUNG','LOOKS':'GRAFIK','SOUNDS':'TÖNE','PIXO':'PIXO','ADS':'WERBUNG','OTHER':'ANDERES',
+'RUG':'TEPPICH','PLANT':'PFLANZE','ROCKET POSTER':'RAKETEN-POSTER','WALL CLOCK':'WANDUHR','PHONE':'TELEFON','BOOMBOX':'GHETTOBLASTER','LAVA LAMP':'LAVALAMPE','BED':'BETT','OLD TV':'ALTER FERNSEHER','STAR LIGHTS':'LICHTERKETTE','BREAKFAST':'FRÜHSTÜCK','LUNCH':'MITTAGESSEN',
+'RECORD PLAYER':'PLATTENSPIELER','DESK + COMPUTER':'SCHREIBTISCH + PC','FRIDGE':'KÜHLSCHRANK','COFFEE MACHINE':'KAFFEEMASCHINE','FAN':'VENTILATOR','SOFA':'SOFA','UMBRELLA':'REGENSCHIRM','AQUARIUM':'AQUARIUM','HEATER':'HEIZLÜFTER','FISH FOOD':'FISCHFUTTER','CAKE':'TORTE'
+}
+/*HR-START*//*HR-END*/
+};
+if(I18N.hr)LANGS.hr=I18N.hr._label;
+function T(s,v){let r=(LANG&&I18N[LANG]&&I18N[LANG][s])||s;if(v)for(const k in v)r=r.split('{'+k+'}').join(v[k]);return r}
+function applyLang(){document.querySelectorAll('[data-t]').forEach(el=>{el.innerHTML=T(el.dataset.t)});document.querySelectorAll('[data-tp]').forEach(el=>{el.placeholder=T(el.dataset.tp)});document.documentElement.lang=LANG||'en'}
+function phoneLang(){const l=(navigator.language||'en').slice(0,2).toLowerCase();return ['en','es','de'].includes(l)?l:'en'}
+
 let S={grid:Array(N*N).fill(0),tray:[],score:0,combo:0,since:0,state:'title',rot:2,adUsed:false};
 let rotMode=false,adFromStuck=false;
 let lifetime=store.get('life',0), scores=store.get('scores',[]), sound=store.get('sound',true), invert=store.get('invert',false);
@@ -363,20 +477,20 @@ function drawPet(){const c=PB.getContext('2d');c.clearRect(0,0,24,24);drawPixo(c
 setInterval(()=>{const b=blinkNow();if(b!==petBlink){petBlink=b;drawPet()}},70);
 function renderPet(){
   const i=stageIdx(),st=STAGES[i],nx=STAGES[i+1];
-  $('petname').textContent='PIXO · '+st.name; $('petlv').textContent='LV'+(i+1);
+  $('petname').textContent='PIXO · '+T(st.name); $('petlv').textContent='LV'+(i+1);
   $('xp').style.width=nx?Math.round((lifetime-st.at)/(nx.at-st.at)*100)+'%':'100%';
   drawPet();
 }
 let bubbleT=null;
 function say(t,mood){
-  $('bubble').textContent=t; const w=$('petwrap');
+  $('bubble').textContent=T(t); const w=$('petwrap');
   w.classList.remove('happy','sad'); void w.offsetWidth;
   if(mood) w.classList.add(mood);
   clearTimeout(bubbleT); if(mood==='happy') bubbleT=setTimeout(()=>{w.classList.remove('happy')},1100);
 }
 function idleLine(){
   const i=stageIdx();
-  if(i===0) return 'Warm me up... ('+(STAGES[1].at-lifetime)+' lines)';
+  if(i===0) return T('Warm me up... ({n} lines)',{n:STAGES[1].at-lifetime});
   const h=takeHint();if(h)return h;
   return ['Ready!','Let\'s play!','Feed me lines!'][Math.floor(Math.random()*3)];
 }
@@ -404,22 +518,22 @@ function renderRot(){
   const b=$('rotBtn');let ph='';for(let k=0;k<Math.max(2,S.rotMax||2);k++)ph+='<i class="'+(S.rot>k?'on':'')+'"></i>';$('pips').innerHTML=ph;
   b.classList.toggle('armed',rotMode);b.classList.toggle('empty',S.rot===0);
   screenEl.classList.toggle('rotmode',rotMode);
-  $('hint').textContent=rotMode?'TAP A BLOCK TO TURN':(S.rot===0&&!S.adUsed?'NEED A TURN? TAP ↻':'DRAG A BLOCK');
+  $('hint').textContent=T(rotMode?'TAP A BLOCK TO TURN':(S.rot===0&&!S.adUsed?'NEED A TURN? TAP ↻':'DRAG A BLOCK'));
 }
 function renderHud(){renderRot();
   $('score').textContent=S.score; $('hi').textContent=Math.max(S.score,scores[0]?scores[0].s:0);
-  const cb=$('combo');if(S.combo>1){cb.textContent='COMBO x'+S.combo;cb.classList.add('on')}else cb.classList.remove('on');
+  const cb=$('combo');if(S.combo>1){cb.textContent=T('COMBO')+' x'+S.combo;cb.classList.add('on')}else cb.classList.remove('on');
 }
-function hiHTML(){if(!scores.length)return'<div><span>NO SCORES YET</span></div>';return scores.map((s,i)=>`<div><span>${i+1}. ${s.n}</span><span>${String(s.s).padStart(5,'0')}</span></div>`).join('')}
+function hiHTML(){if(!scores.length)return'<div><span>'+T('NO SCORES YET')+'</span></div>';return scores.map((s,i)=>`<div><span>${i+1}. ${s.n}</span><span>${String(s.s).padStart(5,'0')}</span></div>`).join('')}
 function render(){renderBoard();renderTray();renderHud();renderPet();$('hiList').innerHTML=hiHTML();$('hiList2').innerHTML=hiHTML();
-  $('ovTitle').hidden=S.state!=='title';$('ovOver').dataset.x=1;$('ovPause').hidden=S.state!=='pause';$('ovAd').hidden=S.state!=='ad';$('ovFb').hidden=S.state!=='fb';$('ovHome').hidden=S.state!=='home';document.querySelectorAll('.homebtn').forEach(b=>b.textContent="⌂ PIXO'S HOME · "+coins+' COINS');$('ovOver').hidden=!(S.state==='over'||S.state==='entry');
+  $('ovTitle').hidden=S.state!=='title';$('ovOver').dataset.x=1;$('ovPause').hidden=S.state!=='pause';$('ovAd').hidden=S.state!=='ad';$('ovFb').hidden=S.state!=='fb';$('ovLang').hidden=S.state!=='lang';$('ovHome').hidden=S.state!=='home';document.querySelectorAll('.homebtn').forEach(b=>b.textContent=T("⌂ PIXO'S HOME")+' · '+coins+' '+T('COINS'));$('ovOver').hidden=!(S.state==='over'||S.state==='entry');
   screenEl.classList.toggle('invert',invert);document.querySelector('.console').classList.toggle('invert-shell',invert);
-  $('soundLbl').textContent=sound?'SOUND ON':'SOUND OFF';
+  $('soundLbl').textContent=T(sound?'SOUND ON':'SOUND OFF');
 }
-function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;screenEl.appendChild(d);setTimeout(()=>d.remove(),800)}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=T(t);screenEl.appendChild(d);setTimeout(()=>d.remove(),800)}
 
 /* ---------- game flow ---------- */
-function newGame(){rotMode=false;let bonus=store.get('bonusRot',0);bonus=bonus===true?1:(+bonus||0);if(bonus)store.set('bonusRot',0);S={grid:Array(N*N).fill(0),tray:[],score:0,combo:0,since:0,state:'play',rot:2+bonus,rotMax:2+bonus,adUsed:false};if(bonus)setTimeout(()=>toast('BONUS +'+bonus+' ↻'),300);deal();SFX.start();say(stageIdx()===0?idleLine():'Let\'s go!');render()}
+function newGame(){rotMode=false;let bonus=store.get('bonusRot',0);bonus=bonus===true?1:(+bonus||0);if(bonus)store.set('bonusRot',0);S={grid:Array(N*N).fill(0),tray:[],score:0,combo:0,since:0,state:'play',rot:2+bonus,rotMax:2+bonus,adUsed:false};if(bonus)setTimeout(()=>toast(T('BONUS +{n} ↻',{n:bonus})),300);deal();SFX.start();say(stageIdx()===0?idleLine():'Let\'s go!');render()}
 function place(i,r,c){
   const p=S.tray[i];p.cells.forEach(([dr,dc])=>S.grid[(r+dr)*N+c+dc]=p.tex);p.used=true;
   S.score+=p.cells.length;SFX.place();
@@ -431,7 +545,7 @@ function place(i,r,c){
     const before=stageIdx();lifetime+=n;store.set('life',lifetime);if(before===0&&stageIdx()>0&&hatchDate===null){hatchDate=new Date().getDate();store.set('hatchDate',hatchDate)}
     const cells=lineCells(fl);cells.forEach(k=>{S.grid[k]=0;cellEls[k].dataset.pop=1});
     setTimeout(()=>{cells.forEach(k=>delete cellEls[k].dataset.pop);renderBoard()},220);
-    SFX.clear(n);toast(n>1?n+' LINES! +'+gain:'+'+gain);
+    SFX.clear(n);toast(n>1?T('{n} LINES! +{g}',{n,g:gain}):'+'+gain);
     if(stageIdx()>before){setTimeout(()=>{SFX.grow();say(before===0?'I hatched!!':'I grew up!','happy');setTimeout(()=>toast('NEW ROOM ITEMS!'),1300)},350)}
     else say(['YUM!','NOM NOM','MORE!','TASTY!'][Math.floor(Math.random()*4)],'happy');
   }else{
@@ -448,7 +562,7 @@ function checkStuck(){
   if(canTurn&&!S.adUsed){render();setTimeout(()=>openAd(true),400);return}
   render();setTimeout(gameOver,500);
 }
-function openAd(stuck){adFromStuck=stuck;rotMode=false;S.state='ad';$('adTitle').textContent=stuck?'STUCK!':'OUT OF ROTATES';$('adOffer').hidden=false;$('adPlay').hidden=true;SFX.blip();render()}
+function openAd(stuck){adFromStuck=stuck;rotMode=false;S.state='ad';$('adTitle').textContent=T(stuck?'STUCK!':'OUT OF ROTATES');$('adOffer').hidden=false;$('adPlay').hidden=true;SFX.blip();render()}
 $('adNo').addEventListener('click',()=>{SFX.blip();S.state='play';if(adFromStuck){render();gameOver()}else render()});
 $('adYes').addEventListener('click',()=>{
   $('adOffer').hidden=true;$('adPlay').hidden=false;let t=5;$('adCount').textContent=t;$('adBar').style.width='0%';
@@ -462,7 +576,7 @@ $('rotBtn').addEventListener('click',()=>{audio();if(S.state!=='play')return;
 });
 function gameOver(){
   SFX.over();S.state='over';say(stageIdx()===0?'...':'Good game!','sad');
-  $('overScore').textContent='SCORE '+S.score;const bonus=Math.floor(S.score/100);addCoins(bonus);S.earned=(S.earned||0)+bonus;$('overCoins').textContent='+'+S.earned+' COINS';
+  $('overScore').textContent=T('SCORE')+' '+S.score;const bonus=Math.floor(S.score/100);addCoins(bonus);S.earned=(S.earned||0)+bonus;$('overCoins').textContent='+'+S.earned+' '+T('COINS');
   const qualifies=S.score>0&&(scores.length<5||S.score>scores[scores.length-1].s);
   if(qualifies){S.state='entry';ini=[0,0,0];buildIni()}
   $('entry').hidden=!qualifies;$('overRest').hidden=qualifies;render();
@@ -524,7 +638,7 @@ function abPress(k){audio();if(S.state==='home'){petPixo();return}SFX.blip();
   if(secret.join('')===CODE){invert=!invert;store.set('invert',invert);secret=[];SFX.secret();render();toast('SECRET FOUND!')}
 }
 $('aBtn').addEventListener('click',()=>abPress('A'));$('bBtn').addEventListener('click',()=>abPress('B'));
-window.addEventListener('keydown',e=>{if(S.state==='fb'||S.state==='home')return;if(e.key==='Enter'){e.preventDefault();startPress()}else if(e.key==='a'||e.key==='A')abPress('A');else if(e.key==='b'||e.key==='B')abPress('B')});
+window.addEventListener('keydown',e=>{if(S.state==='fb'||S.state==='home'||S.state==='lang')return;if(e.key==='Enter'){e.preventDefault();startPress()}else if(e.key==='a'||e.key==='A')abPress('A');else if(e.key==='b'||e.key==='B')abPress('B')});
 
 /* ---------- crisp pixel output: always scale by a whole number so every pixel is the same size ---------- */
 function present(dst,src,cssW,cssH){
@@ -856,7 +970,7 @@ function drawRoom(){
   c.globalCompositeOperation='multiply';const v=c.createRadialGradient(64,56,40,64,56,92);v.addColorStop(0,'rgba(255,255,255,0)');v.addColorStop(1,'rgba(120,80,90,.35)');c.fillStyle=v;c.fillRect(0,0,128,112);c.globalCompositeOperation='source-over';
   present($('room'),RB,$('shop').clientWidth||300);
 }
-function roomSay(t){$('homeSay').textContent=t}
+function roomSay(t){$('homeSay').textContent=T(t)}
 function fx(k,x,y){RM.fx.push({k,x,y,life:16})}
 function tickRoom(){
   RM.f++;const now=Date.now(),pl=P();
@@ -886,7 +1000,7 @@ function interact(id){
     case 'boombox':RM.music=now+TUNE.length*120;RM.tune=1;tone(TUNE,.12,'square',.03);roomSay('La la la! Dance time!');break;
     case 'record':RM.music=now+TUNE2.length*140;RM.tune=2;tone(TUNE2,.14,'triangle',.05);roomSay(isFridayNight()?'Friday night groove!':'Smooth vinyl sound...');break;
     case 'phone':RM.ring=now+900;tone([1200,0,1200,0,0,1200,0,1200],.07);roomSay('Hello? ...Wrong number!');break;
-    case 'clock':{const d=new Date();roomSay("IT'S "+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));SFX.blip();break}
+    case 'clock':{const d=new Date();roomSay(T("IT'S {t}",{t:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}));SFX.blip();break}
     case 'bed':if(RM.meal)return;RM.mode='sleep';RM.until=now+5000;tone([392,330,262],.25,'triangle',.05);roomSay('Zzz... nap time');break;
     case 'plant':RM.sway=now+1200;fx('heart',it.x+6,it.y-6);SFX.blip();roomSay(it.say);break;
     case 'fridge':RM.fridge=now+2500;tone([330,262],.06);roomSay('So many snacks...');break;
@@ -910,23 +1024,23 @@ $('room').addEventListener('pointerdown',e=>{
 function itemState(it){return !it.food&&has(it.id)?'owned':petLv()<(it.lv||1)?'locked':'open'}
 function shopItems(){return P().items.filter(it=>!it.carried)}
 function renderShop(){
-  const pl=P();$('homeTitle').textContent=pl.title;$('coinsLbl').textContent='COINS '+coins;
-  const rl=$('rentLbl');if(home==='flat'){const d=Math.ceil((flat.paidUntil-Date.now())/864e5);rl.hidden=false;rl.textContent=rentDue()?'RENT DUE · 40 COINS · PLAY TO EARN':'RENT PAID · '+d+(d===1?' DAY':' DAYS')+' LEFT';rl.classList.toggle('due',rentDue())}else rl.hidden=true;
-  const ch=$('chapter');ch.hidden=!(home==='room'&&roomComplete());
-  $('shop').innerHTML=shopItems().map(it=>{const st=itemState(it);const lbl=st==='owned'?'OWNED':st==='locked'?'LV'+it.lv:it.price;
-    return `<button type="button" class="shopcard ${st}${it.food?' food':''}${RM.sel===it.id?' sel':''}" data-id="${it.id}" aria-label="${it.name}"><span class="ic"><canvas></canvas></span><span>${lbl}</span></button>`}).join('');
+  const pl=P();$('homeTitle').textContent=T(pl.title);$('coinsLbl').textContent=T('COINS')+' '+coins;
+  const rl=$('rentLbl');if(home==='flat'){const d=Math.ceil((flat.paidUntil-Date.now())/864e5);rl.hidden=false;rl.textContent=rentDue()?T('RENT DUE · 40 COINS · PLAY TO EARN'):T(d===1?'RENT PAID · {d} DAY LEFT':'RENT PAID · {d} DAYS LEFT',{d});rl.classList.toggle('due',rentDue())}else rl.hidden=true;
+  const ch=$('chapter');ch.hidden=!(home==='room'&&roomComplete());if(Date.now()>moveArm)$('goFlat').textContent=T('NEW FLAT · 300');
+  $('shop').innerHTML=shopItems().map(it=>{const st=itemState(it);const lbl=st==='owned'?T('OWNED'):st==='locked'?'LV'+it.lv:it.price;
+    return `<button type="button" class="shopcard ${st}${it.food?' food':''}${RM.sel===it.id?' sel':''}" data-id="${it.id}" aria-label="${T(it.name)}"><span class="ic"><canvas></canvas></span><span>${lbl}</span></button>`}).join('');
   $('shop').querySelectorAll('.shopcard').forEach(b=>{const it=itemOf(b.dataset.id),cv=b.querySelector('canvas');
     const src=it.id==='lights'?buf(34,10):buf(it.w+(it.id==='fridge'?0:0),it.h),sc=src.getContext('2d');
     const keep=RM.fridge;RM.fridge=0;if(it.id==='lights')drawLights(sc,0,0,34,false);else DRAW[it.id](sc,0,0,0);RM.fridge=keep;
     present(cv,src,Math.max(20,b.clientWidth-6),28)});
   const it=RM.sel&&itemOf(RM.sel),bb=$('buyBtn');bb.hidden=true;
-  if(!it){$('shopInfo').textContent=rentDue()?'Pay the rent before buying new things.':'Tap an item to see it.';return}
-  const st=itemState(it);
-  if(st==='owned')$('shopInfo').textContent=it.name+' · in your home. Tap it there!';
-  else if(st==='locked')$('shopInfo').textContent=it.name+' · Pixo must reach LV'+it.lv;
-  else if(rentDue())$('shopInfo').textContent='Rent is due (40 coins). Play a game to earn coins.';
-  else if(coins<it.price)$('shopInfo').textContent=it.name+' · '+it.price+' coins (need '+(it.price-coins)+' more)';
-  else{$('shopInfo').textContent=it.name+' · '+it.price+' coins'+(it.food==='pixo'?' · Pixo eats it right away':it.food==='fish'?' · for the aquarium':'');bb.hidden=false}
+  if(!it){$('shopInfo').textContent=T(rentDue()?'Pay the rent before buying new things.':'Tap an item to see it.');return}
+  const st=itemState(it),nm=T(it.name);
+  if(st==='owned')$('shopInfo').textContent=nm+' · '+T('in your home. Tap it there!');
+  else if(st==='locked')$('shopInfo').textContent=nm+' · '+T('Pixo must reach LV{n}',{n:it.lv});
+  else if(rentDue())$('shopInfo').textContent=T('Rent is due (40 coins). Play a game to earn coins.');
+  else if(coins<it.price)$('shopInfo').textContent=nm+' · '+T('{p} coins (need {m} more)',{p:it.price,m:it.price-coins});
+  else{$('shopInfo').textContent=nm+' · '+T('{p} coins',{p:it.price})+(it.food==='pixo'?' · '+T('Pixo eats it right away'):it.food==='fish'?' · '+T('for the aquarium'):'');bb.hidden=false}
 }
 $('shop').addEventListener('click',e=>{const b=e.target.closest('.shopcard');if(!b)return;RM.sel=b.dataset.id;SFX.blip();renderShop()});
 $('buyBtn').addEventListener('click',()=>{const it=itemOf(RM.sel),pl=P();if(!it||itemState(it)!=='open'||coins<it.price||rentDue()){SFX.bad();return}
@@ -939,12 +1053,12 @@ $('buyBtn').addEventListener('click',()=>{const it=itemOf(RM.sel),pl=P();if(!it|
   else{addOwned(it.id);if(it.id==='aquarium'){flat.fishFedAt=Date.now();store.set('flat',flat)}RM.jump=6;fx('heart',RM.px+9,pl.petY-8);roomSay(['I love it!','Wow, thank you!','Best home ever!'][Math.floor(Math.random()*3)])}
   SFX.grow();
   if(need){if(it.food==='pixo'){meals[it.id]=today();store.set('meals',meals)}const r=need.reward||1;addBonusRot(r);
-    setTimeout(()=>{SFX.secret();toast('PIXO IS HAPPY! +'+r+' ↻ NEXT GAME');roomSay(it.id==='cake'?'You remembered my birthday!!':it.food?'How did you know?!':'You read my mind! Thank you!')},700)}
+    setTimeout(()=>{SFX.secret();toast(T('PIXO IS HAPPY! +{n} ↻ NEXT GAME',{n:r}));roomSay(it.id==='cake'?'You remembered my birthday!!':it.food?'How did you know?!':'You read my mind! Thank you!')},700)}
   renderShop()});
 let moveArm=0;
 $('goFlat').addEventListener('click',()=>{audio();
   if(coins<300){SFX.bad();roomSay('Moving costs 300 coins... let\'s play some more!');return}
-  if(Date.now()>moveArm){moveArm=Date.now()+3000;$('goFlat').textContent='SURE? TAP AGAIN';SFX.blip();setTimeout(()=>{$('goFlat').textContent='NEW FLAT · 300'},3000);return}
+  if(Date.now()>moveArm){moveArm=Date.now()+3000;$('goFlat').textContent=T('SURE? TAP AGAIN');SFX.blip();setTimeout(()=>{$('goFlat').textContent=T('NEW FLAT · 300')},3000);return}
   coins-=300;store.set('coins',coins);flat={owned:['poster','clock','bed','lamp'],paidUntil:Date.now()+7*864e5,fishFedAt:0,movedAt:Date.now()};
   home='flat';store.set('flat',flat);store.set('place',home);RM.px=56;RM.mode='walk';RM.sel=null;RM.jump=6;
   SFX.grow();toast('MOVED IN! RENT PAID 7 DAYS');roomSay('Our new flat! My bed, clock, lamp and poster came along!');render();renderShop();drawRoom()});
@@ -954,7 +1068,7 @@ function openHome(){
   audio();RM.prev=S.state;S.state='home';RM.sel=null;RM.px=P().walk[0]+10;RM.mode='walk';
   payRent();
   const hint=takeHint();
-  roomSay(welcome?'I saved '+coins+' coins for you!':hint?hint:rentDue()?'Rent is due... we need 40 coins.':home==='room'&&roomComplete()?'My room is perfect... what\'s next?':ownedList().length?'Welcome home!':'My room is empty... buy me something?');welcome=false;
+  roomSay(welcome?T('I saved {n} coins for you!',{n:coins}):hint?hint:rentDue()?'Rent is due... we need 40 coins.':home==='room'&&roomComplete()?'My room is perfect... what\'s next?':ownedList().length?'Welcome home!':'My room is empty... buy me something?');welcome=false;
   render();renderShop();drawRoom();clearInterval(RM.timer);RM.timer=setInterval(tickRoom,110);SFX.blip();
 }
 function closeHome(){clearInterval(RM.timer);RM.timer=null;if(RM.meal){RM.meal=null}RM.mode='walk';S.state=RM.prev==='home'?'title':RM.prev;SFX.blip();render()}
@@ -968,23 +1082,23 @@ function capDb(){ if(!dbP) dbP=(async()=>{try{const c=window.claude;if(!c||!c.us
 function fbCooldown(){const t=store.get('fbAt',0);return Date.now()-t<20*60*60*1000}
 function drawFb(){
   $('hearts').innerHTML=[1,2,3,4,5].map(n=>`<button type="button" class="heart${fb.fun>=n?' on':''}" data-n="${n}" aria-label="${n} of 5">♥</button>`).join('');
-  $('chips').innerHTML=TAGS.map(t=>`<button type="button" class="chip${fb.tags.has(t)?' on':''}" data-t="${t}">${t}</button>`).join('');
+  $('chips').innerHTML=TAGS.map(t=>`<button type="button" class="chip${fb.tags.has(t)?' on':''}" data-tag="${t}">${T(t)}</button>`).join('');
 }
 function openFb(){fbPrev=S.state;fb={fun:0,tags:new Set()};$('fbText').value='';$('fbSend').disabled=false;
-  $('fbNote').textContent=fbCooldown()?'Thanks again! Next reward unlocks tomorrow.':'Reward: +1 rotate in your next game';
+  $('fbNote').textContent=T(fbCooldown()?'Thanks again! Next reward unlocks tomorrow.':'Reward: +1 rotate in your next game');
   drawFb();S.state='fb';SFX.blip();render();capDb()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-fb]');if(b){audio();openFb()}});
 $('hearts').addEventListener('click',e=>{const b=e.target.closest('.heart');if(!b)return;fb.fun=+b.dataset.n;SFX.blip();drawFb()});
-$('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;const t=b.dataset.t;fb.tags.has(t)?fb.tags.delete(t):fb.tags.add(t);SFX.blip();drawFb()});
+$('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;const t=b.dataset.tag;fb.tags.has(t)?fb.tags.delete(t):fb.tags.add(t);SFX.blip();drawFb()});
 $('fbClose').addEventListener('click',()=>{S.state=fbPrev;SFX.blip();render()});
 $('fbForm').addEventListener('submit',async e=>{
   e.preventDefault();const text=$('fbText').value.trim();
-  if(!fb.fun){$('fbNote').textContent='Tap the hearts to rate the fun.';SFX.bad();return}
-  if(text.length<10&&!fb.tags.size){$('fbNote').textContent='Pick a topic or write a few words.';SFX.bad();return}
-  $('fbSend').disabled=true;$('fbNote').textContent='Sending...';
-  const entry={at:new Date().toISOString(),fun:fb.fun,tags:[...fb.tags],text,best:scores[0]?scores[0].s:0,lastScore:S.score||0,petStage:STAGES[stageIdx()].name,lines:lifetime,ver:'0.7'};
+  if(!fb.fun){$('fbNote').textContent=T('Tap the hearts to rate the fun.');SFX.bad();return}
+  if(text.length<10&&!fb.tags.size){$('fbNote').textContent=T('Pick a topic or write a few words.');SFX.bad();return}
+  $('fbSend').disabled=true;$('fbNote').textContent=T('Sending...');
+  const entry={at:new Date().toISOString(),fun:fb.fun,tags:[...fb.tags],text,best:scores[0]?scores[0].s:0,lastScore:S.score||0,petStage:STAGES[stageIdx()].name,lines:lifetime,lang:LANG||'en',device:navigator.language||'',ver:'0.8'};
   let sent=false;const cap=await capDb();
-  if(cap){try{const ref=cap.db.doc('feedback/'+cap.id);const snap=await ref.get();const prev=snap.exists&&Array.isArray((snap.data()||{}).items)?snap.data().items:[];await ref.set({lastAt:entry.at,count:prev.length+1,items:[...prev,entry].slice(-20)});sent=true}catch(err){sent=false}}
+  if(cap){try{const ref=cap.db.doc('feedback/'+cap.id);const snap=await ref.get();const prev=snap.exists&&Array.isArray((snap.data()||{}).items)?snap.data().items:[];await ref.set({lastAt:entry.at,lang:LANG||'en',count:prev.length+1,items:[...prev,entry].slice(-20)});sent=true}catch(err){sent=false}}
   if(!sent){const q=store.get('fbQueue',[]);q.push(entry);store.set('fbQueue',q.slice(-20))}
   const rewarded=!fbCooldown();
   if(rewarded){store.set('fbAt',Date.now());addBonusRot(1)}
@@ -993,9 +1107,19 @@ $('fbForm').addEventListener('submit',async e=>{
   if(!sent) setTimeout(()=>toast('SAVED ON THIS DEVICE'),900);
 });
 
+/* ---------- language picker ---------- */
+let langPrev='title',ownerHR=false;
+function renderLangs(){const cur=LANG||phoneLang();$('langs').innerHTML=Object.keys(LANGS).filter(k=>k!=='hr'||ownerHR||LANG==='hr').map(k=>`<button type="button" class="lbtn${k===cur?' sel':''}" data-l="${k}">${LANGS[k]}</button>`).join('')}
+function openLang(){langPrev=S.state==='lang'?'title':S.state;S.state='lang';renderLangs();render()}
+$('langs').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;audio();LANG=b.dataset.l;store.set('lang',LANG);applyLang();SFX.blip();
+  S.state=langPrev||'title';say(idleLine());render();recordLang()});
+document.addEventListener('click',e=>{if(e.target.closest('[data-lang]')){audio();SFX.blip();openLang()}});
+async function recordLang(){try{const cap=await capDb();if(cap)await cap.db.doc('feedback/'+cap.id+'/meta/player').set({lang:LANG||'en',device:navigator.language||'',seen:new Date().toISOString()})}catch(e){}}
+if(I18N.hr){(async()=>{try{const u=window.claude&&window.claude.use?await window.claude.use('user'):null;ownerHR=!!(u&&await u.isOwner());if(S.state==='lang')renderLangs()}catch(e){}})()}
+
 /* ---------- boot (keeps a running game across page updates) ---------- */
 window.claude?.hot?.snapshot?.(()=>({S}));
-function start(data){if(data&&data.S&&data.S.grid){S=data.S;if(S.state==='play'||S.state==='ad')S.state='pause';if(S.state==='fb'||S.state==='home')S.state='title';if(S.rot==null){S.rot=2;S.adUsed=false}}say(idleLine());render()}
+function start(data){if(data&&data.S&&data.S.grid){S=data.S;if(S.state==='play'||S.state==='ad')S.state='pause';if(S.state==='fb'||S.state==='home'||S.state==='lang')S.state='title';if(S.rot==null){S.rot=2;S.adUsed=false}}applyLang();if(!LANG)S.state='lang',renderLangs();else recordLang();say(idleLine());render()}
 window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
 })();
 </script>
