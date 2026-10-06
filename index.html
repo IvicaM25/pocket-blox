@@ -107,6 +107,7 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
 .homesay{width:100%;text-align:center;margin:0}
 .rentline{width:100%;font-family:var(--f-display);font-size:8px;letter-spacing:.08em;color:var(--lcd-mid);text-align:left;margin-top:-2px}
 .rentline.due{color:#ff6b8a}
+.roomtabs{display:flex;gap:6px;width:100%}.roomtabs .lbtn{flex:1;font-size:9px;padding:4px 6px;border-width:1px;opacity:.7}.roomtabs .lbtn.sel{opacity:1;border-color:var(--accent);color:var(--accent)}
 .chapter{width:100%;flex:none;border:2px solid var(--accent);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:6px;background:rgba(255,207,90,.06)}
 .chapter .chtitle{font-family:var(--f-display);font-size:10px;color:var(--accent);margin:0}
 .chapter .chnote{font-size:14px;line-height:1;margin:0;color:var(--lcd-mid)}
@@ -154,9 +155,12 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
 .press{animation:blink 1s steps(2) infinite;font-family:var(--f-display);font-size:11px;letter-spacing:.1em}
 .scores{font-size:20px;line-height:1.05;font-variant-numeric:tabular-nums;min-width:150px}
 .scores div{display:flex;justify-content:space-between;gap:16px}
-.initials{display:flex;gap:10px}
+.scores .hd{justify-content:center;font-family:var(--f-display);font-size:9px;letter-spacing:.1em;color:var(--lcd-mid)}
+.scores .me{color:var(--accent)}
+.overlay{overflow-y:auto}
+.initials{display:flex;gap:6px}
 .ini{display:flex;flex-direction:column;align-items:center;gap:2px}
-.ini span{font-family:var(--f-display);font-size:28px;line-height:1;width:32px;border-bottom:3px solid var(--lcd-ink)}
+.ini span{font-family:var(--f-display);font-size:24px;line-height:1;width:26px;border-bottom:3px solid var(--lcd-ink)}
 .lbtn{border-radius:6px;font-family:var(--f-display);font-size:12px;background:none;border:2px solid var(--lcd-ink);color:var(--lcd-ink);padding:2px 10px;cursor:pointer}
 .lbtn.arrow{border:none;color:var(--accent);padding:0 6px;font-size:14px}
 .lbtn:focus-visible,.hw:focus-visible{outline:2px dashed var(--led);outline-offset:3px}
@@ -216,6 +220,7 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
       <div class="overlay home" id="ovHome" hidden>
         <div class="homehead"><span id="homeTitle">PIXO'S ROOM</span><span id="coinsLbl">COINS 0</span></div>
         <div class="rentline" id="rentLbl" hidden></div>
+        <div class="roomtabs" id="roomTabs" hidden><button type="button" class="lbtn" data-room="flat" data-t="LIVING ROOM">LIVING ROOM</button><button type="button" class="lbtn" data-room="bath" data-t="BATHROOM">BATHROOM</button></div>
         <canvas id="room" width="128" height="112" aria-label="Pixo's room. Tap Pixo or your items."></canvas>
         <p class="bubble homesay" id="homeSay">...</p>
         <div class="chapter" id="chapter" hidden>
@@ -345,6 +350,11 @@ function drawPixo(c,ox,oy,st,o={}){
   if(o.burn){if(big){P(5,15,'#ff4f4f',3,2);P(16,15,'#ff4f4f',3,2);P(9,7,'#ff6b6b',6,1);P(10,8,'#ff6b6b',4,1)}else{P(6,18,'#ff6b6b',3,1);P(15,18,'#ff6b6b',3,1);P(10,11,'#ff9a8a',4,1)}}
   if(o.glasses){if(big){P(6,11,OL,12,1);P(7,12,'#2a2638',4,2);P(13,12,'#2a2638',4,2);P(8,12,'#6a6585');P(14,12,'#6a6585')}else{P(8,14,OL,8,1);P(8,15,'#2a2638',3,2);P(13,15,'#2a2638',3,2);P(9,15,'#6a6585')}}
   if(o.flower){P(17,2,'#ff6b8a',2,2);P(18,1,'#ffd166')}
+  if(o.dirty){P(7,17,'#8a6a4a',2,1);P(15,12,'#8a6a4a');P(14,19,'#8a6a4a',2,1);P(9,8,'#8a6a4a');P(17,17,'#8a6a4a')}
+  if(big&&o.jacket){for(let y=17;y<23;y++){const hw=Math.floor(9*Math.sqrt(Math.max(0,1-((y+.5-14.5)/8.5)**2)))-1;if(hw>0)P(12-hw,y,y===17?'#f4ecdc':y===22?'#6b4229':'#8a5a3c',hw*2,1)}P(12,18,'#6b4229',1,4)}
+  if(big&&o.boots){P(5,20,OL,7,4);P(6,20,'#8a5a3c',5,3);P(13,20,OL,7,4);P(14,20,'#8a5a3c',5,3);P(7,21,'#ffd166',2,1);P(15,21,'#ffd166',2,1)}
+  if(big&&o.headlamp){P(4,8,OL,16,1);P(5,8,'#e5484d',14,1);P(10,6,OL,4,3);P(11,7,'#ffd166',2,1)}
+  if(big&&o.binoculars){P(8,18,OL,8,3);P(9,19,'#3a3550',2,1);P(13,19,'#3a3550',2,1)}
   if(o.sweat)P(19,7+((Date.now()/160|0)%5),'#6cb6ff',1,2);
   if(o.hat){for(let j=0;j<7;j++){const hw=(j>>1)+1;P(12-hw,j-2,OL,hw*2,1);if(j>0&&hw>1)P(13-hw,j-2,j%2?'#a77bf3':'#ffd166',hw*2-2,1)}P(11,-3,'#ff6b8a',2,2)}
   if(st===4&&!o.hat){P(8,1,OL,8,5);P(9,2,'#ffcf5a',6,3);P(8,0,OL);P(11,0,OL,2,1);P(15,0,OL);P(9,1,'#ffcf5a');P(14,1,'#ffcf5a');P(11,1,'#ffcf5a',2,1);P(9,4,'#d99a1e',6,1);P(11,3,'#e5484d',2,1)}
@@ -404,7 +414,7 @@ es:{
 'TOO HARD':'MUY DIFÍCIL','TOO EASY':'MUY FÁCIL','CONTROLS':'CONTROLES','LOOKS':'GRÁFICOS','SOUNDS':'SONIDOS','PIXO':'PIXO','ADS':'ANUNCIOS','OTHER':'OTRO',
 'RUG':'ALFOMBRA','PLANT':'PLANTA','ROCKET POSTER':'PÓSTER COHETE','WALL CLOCK':'RELOJ','PHONE':'TELÉFONO','BOOMBOX':'RADIOCASETE','LAVA LAMP':'LÁMPARA DE LAVA','BED':'CAMA','OLD TV':'TELE ANTIGUA','STAR LIGHTS':'LUCES','BREAKFAST':'DESAYUNO','LUNCH':'COMIDA',
 'RECORD PLAYER':'TOCADISCOS','DESK + COMPUTER':'ESCRITORIO + ORDENADOR','FRIDGE':'NEVERA','COFFEE MACHINE':'CAFETERA','FAN':'VENTILADOR','SOFA':'SOFÁ','UMBRELLA':'PARAGUAS','AQUARIUM':'ACUARIO','HEATER':'ESTUFA','FISH FOOD':'COMIDA PECES','CAKE':'TARTA',
-"PIXO'S BEACH":"PLAYA DE PIXO","HAMMOCK":"HAMACA","TIKI TORCHES":"ANTORCHAS TIKI","PARASOL":"SOMBRILLA","SUN LOUNGER":"TUMBONA","SURFBOARD":"TABLA DE SURF","TOWEL":"TOALLA","BUCKET & SPADE":"CUBO Y PALA","BEACH BALL":"PELOTA","SUNGLASSES":"GAFAS DE SOL","ICE CREAM":"HELADO","SUNSCREEN":"CREMA SOLAR","Swing, swing...":"Me balanceo...","Tiki time!":"¡Hora tiki!","Nice shade...":"Qué buena sombra...","Surf's up!":"¡A surfear!","Perfect spot!":"¡Sitio perfecto!","Sandcastle time!":"¡A hacer castillos!","Boing!":"¡Boing!","Pure relaxation...":"Pura relajación...","Ouch... the sun is burning!":"Ay... ¡el sol quema!","So hot... I need something cold!":"Qué calor... ¡necesito algo frío!","The sun is going down...":"El sol se está poniendo...","Low tide... perfect sand for building!":"Marea baja... ¡arena perfecta para construir!","New flat: 300 coins + 40 a week. Beach holiday: 300 coins.":"Piso nuevo: 300 monedas + 40 por semana. Vacaciones en la playa: 300 monedas.","★ FLAT COMPLETE! TIME FOR A TRIP? ★":"★ ¡PISO COMPLETO! ¿UN VIAJE? ★","Beach holiday: 300 coins. Rent is paused while Pixo is away.":"Vacaciones en la playa: 300 monedas. El alquiler se pausa mientras Pixo no está.","★ BEST HOLIDAY EVER! WHAT'S NEXT? ★":"★ ¡LAS MEJORES VACACIONES! ¿Y AHORA? ★","Head home to the flat, or the mountains soon.":"Vuelve al piso, o pronto a la montaña.","A flat costs 300 coins + 40 a week.":"Un piso cuesta 300 monedas + 40 por semana.","BEACH · 300":"PLAYA · 300","VISIT THE BEACH":"IR A LA PLAYA","BACK TO THE FLAT":"VOLVER AL PISO","MOUNTAINS · SOON":"MONTAÑA · PRONTO","OFF TO THE BEACH!":"¡A LA PLAYA!","Pack your bags! Holiday time!":"¡Haz la maleta! ¡Vacaciones!","HOME SWEET HOME!":"¡HOGAR, DULCE HOGAR!","Home sweet home!":"¡Hogar, dulce hogar!","A holiday costs 300 coins... let's play some more!":"Las vacaciones cuestan 300 monedas... ¡juguemos un poco más!","PIXO FELL IN LOVE ♥":"¡PIXO SE HA ENAMORADO! ♥","Who is that...? I think I'm in love!":"¿Quién es...? ¡Creo que me he enamorado!","Hi there, cutie! ♥":"¡Hola, guapo! ♥","Low tide! Look at the shells!":"¡Marea baja! ¡Mira las conchas!","What a sunset...":"Qué atardecer...","Moonlight on the sea...":"La luna sobre el mar...","The sea is calm...":"El mar está tranquilo...","Ahh, protected!":"¡Ahh, protegido!","My flat is perfect... maybe a trip?":"Mi piso es perfecto... ¿un viaje?","Best holiday ever... what's next?":"Las mejores vacaciones... ¿y ahora?","Back to the beach!":"¡Otra vez en la playa!","The beach! Let's get some gear!":"¡La playa! ¡Vamos a por cosas!","Looking cool!":"¡Qué estilo!"
+"PIXO'S BEACH":"PLAYA DE PIXO","HAMMOCK":"HAMACA","TIKI TORCHES":"ANTORCHAS TIKI","PARASOL":"SOMBRILLA","SUN LOUNGER":"TUMBONA","SURFBOARD":"TABLA DE SURF","TOWEL":"TOALLA","BUCKET & SPADE":"CUBO Y PALA","BEACH BALL":"PELOTA","SUNGLASSES":"GAFAS DE SOL","ICE CREAM":"HELADO","SUNSCREEN":"CREMA SOLAR","Swing, swing...":"Me balanceo...","Tiki time!":"¡Hora tiki!","Nice shade...":"Qué buena sombra...","Surf's up!":"¡A surfear!","Perfect spot!":"¡Sitio perfecto!","Sandcastle time!":"¡A hacer castillos!","Boing!":"¡Boing!","Pure relaxation...":"Pura relajación...","Ouch... the sun is burning!":"Ay... ¡el sol quema!","So hot... I need something cold!":"Qué calor... ¡necesito algo frío!","The sun is going down...":"El sol se está poniendo...","Low tide... perfect sand for building!":"Marea baja... ¡arena perfecta para construir!","New flat: 300 coins + 40 a week. Beach holiday: 300 coins.":"Piso nuevo: 300 monedas + 40 por semana. Vacaciones en la playa: 300 monedas.","★ FLAT COMPLETE! TIME FOR A TRIP? ★":"★ ¡PISO COMPLETO! ¿UN VIAJE? ★","Beach holiday: 300 coins. Rent is paused while Pixo is away.":"Vacaciones en la playa: 300 monedas. El alquiler se pausa mientras Pixo no está.","★ BEST HOLIDAY EVER! WHAT'S NEXT? ★":"★ ¡LAS MEJORES VACACIONES! ¿Y AHORA? ★","Head home to the flat, or the mountains soon.":"Vuelve al piso, o pronto a la montaña.","A flat costs 300 coins + 40 a week.":"Un piso cuesta 300 monedas + 40 por semana.","BEACH · 300":"PLAYA · 300","VISIT THE BEACH":"IR A LA PLAYA","BACK TO THE FLAT":"VOLVER AL PISO","MOUNTAINS · SOON":"MONTAÑA · PRONTO","OFF TO THE BEACH!":"¡A LA PLAYA!","Pack your bags! Holiday time!":"¡Haz la maleta! ¡Vacaciones!","HOME SWEET HOME!":"¡HOGAR, DULCE HOGAR!","Home sweet home!":"¡Hogar, dulce hogar!","A holiday costs 300 coins... let's play some more!":"Las vacaciones cuestan 300 monedas... ¡juguemos un poco más!","PIXO FELL IN LOVE ♥":"¡PIXO SE HA ENAMORADO! ♥","Who is that...? I think I'm in love!":"¿Quién es...? ¡Creo que me he enamorado!","Hi there, cutie! ♥":"¡Hola, guapo! ♥","Low tide! Look at the shells!":"¡Marea baja! ¡Mira las conchas!","What a sunset...":"Qué atardecer...","Moonlight on the sea...":"La luna sobre el mar...","The sea is calm...":"El mar está tranquilo...","Ahh, protected!":"¡Ahh, protegido!","My flat is perfect... maybe a trip?":"Mi piso es perfecto... ¿un viaje?","Best holiday ever... what's next?":"Las mejores vacaciones... ¿y ahora?","Back to the beach!":"¡Otra vez en la playa!","The beach! Let's get some gear!":"¡La playa! ¡Vamos a por cosas!","Looking cool!":"¡Qué estilo!","PIXO'S BATHROOM":"BA\u00d1O DE PIXO","BATHTUB":"BA\u00d1ERA","RUBBER DUCK":"PATITO DE GOMA","SINK + MIRROR":"LAVABO + ESPEJO","WASHING MACHINE":"LAVADORA","TOWEL RACK":"TOALLERO","BATH MAT":"ALFOMBRILLA","FERN":"HELECHO","LAUNDRY BASKET":"CESTO DE ROPA","TOOTHPASTE":"PASTA DE DIENTES","BUBBLE BATH":"BA\u00d1O DE ESPUMA","Quack!":"\u00a1Cuac!","Fluffy towels!":"\u00a1Toallas suaves!","Soft on the feet!":"\u00a1Qu\u00e9 suave para los pies!","It loves the steam!":"\u00a1Le encanta el vapor!","I feel all dusty from the trip...":"Estoy todo sucio del viaje...","So much dirty laundry...":"Cu\u00e1nta ropa sucia...","Time to brush before bed?":"\u00bfHora de cepillarse antes de dormir?","LIVING ROOM":"SAL\u00d3N","BATHROOM":"BA\u00d1O","Splash!":"\u00a1Chof!","Washing the holiday clothes!":"\u00a1Lavando la ropa del viaje!","Nothing to wash right now.":"Ahora no hay nada que lavar.","Looking good!":"\u00a1Qu\u00e9 guapo!","Squeaky clean!":"\u00a1Limp\u00edsimo!","Frosted glass... cozy.":"Cristal esmerilado... acogedor.","for the bathtub":"para la ba\u00f1era","We need a bathtub first!":"\u00a1Primero necesitamos una ba\u00f1era!","Fresh breath!":"\u00a1Aliento fresco!","Splish splash!":"\u00a1Chapoteo!","An empty bathroom... let's fix it up!":"Un ba\u00f1o vac\u00edo... \u00a1vamos a arreglarlo!","The bathroom!":"\u00a1El ba\u00f1o!","The living room!":"\u00a1El sal\u00f3n!","PIXO IN THE MOUNTAINS":"PIXO EN LA MONTA\u00d1A","TENT":"TIENDA","SLEEPING BAG":"SACO DE DORMIR","HIKING POLES":"BASTONES","SUMMIT FLAG":"BANDERA DE CUMBRE","BACKPACK":"MOCHILA","MAP":"MAPA","CAMPFIRE":"FOGATA","HIKING BOOTS":"BOTAS","HEADLAMP":"LINTERNA FRONTAL","FUR JACKET":"ABRIGO DE PIEL","BINOCULARS":"PRISM\u00c1TICOS","HOT TEA":"T\u00c9 CALIENTE","Home sweet tent!":"\u00a1Hogar, dulce tienda!","Ready to climb!":"\u00a1Listo para subir!","For the summit!":"\u00a1Para la cumbre!","Packed and ready!":"\u00a1Mochila lista!","The summit is that way!":"\u00a1La cumbre est\u00e1 por all\u00ed!","Brrr... a cold morning up here.":"Brrr... qu\u00e9 ma\u00f1ana tan fr\u00eda aqu\u00ed arriba.","I can't see a thing in the dark...":"No veo nada en la oscuridad...","Evenings get chilly in the mountains...":"Las tardes en la monta\u00f1a son fr\u00edas...","It's snowing! I'm freezing!":"\u00a1Est\u00e1 nevando! \u00a1Me congelo!","Is that a bird way up there?":"\u00bfEs un p\u00e1jaro eso de all\u00e1 arriba?","MADE IT TO THE TOP!":"\u00a1LLEGU\u00c9 A LA CIMA!","Honestly... it's not as fun as it looks on social media.":"Sinceramente... no es tan divertido como parece en las redes sociales.","Cozy fire...":"Qu\u00e9 fuego tan acogedor...","Zzz... under the stars":"Zzz... bajo las estrellas","Clouds below my feet...":"Nubes bajo mis pies...","Something is circling up there...":"Algo da vueltas all\u00e1 arriba...","Snow everywhere!":"\u00a1Nieve por todas partes!","What a view!":"\u00a1Qu\u00e9 vistas!","Back on the trail!":"\u00a1De vuelta al sendero!","The mountains! I need some gear!":"\u00a1La monta\u00f1a! \u00a1Necesito equipo!","Trips cost 300 coins. Rent is paused while Pixo is away.":"Los viajes cuestan 300 monedas. El alquiler se pausa mientras Pixo no est\u00e1.","Head home, or back to the mountains.":"Vuelve a casa, o a la monta\u00f1a.","Mountains: 300 coins. Short on coins? The bank lends up to 150.":"Monta\u00f1a: 300 monedas. \u00bfTe faltan? El banco presta hasta 150.","\u2605 SUMMIT REACHED! \u2605":"\u2605 \u00a1CUMBRE ALCANZADA! \u2605","Time to head home. Pixo needs a rest.":"Hora de volver a casa. Pixo necesita descansar.","MOUNTAINS \u00b7 300":"MONTA\u00d1A \u00b7 300","VISIT THE MOUNTAINS":"IR A LA MONTA\u00d1A","BACK HOME":"VOLVER A CASA","BANK LOAN -{n}":"PR\u00c9STAMO -{n}","OFF TO THE MOUNTAINS!":"\u00a1A LA MONTA\u00d1A!","Fresh mountain air! Let's get some gear!":"\u00a1Aire de monta\u00f1a! \u00a1Vamos a por equipo!","Home again... and we owe the bank {n} coins.":"Otra vez en casa... y debemos {n} monedas al banco.","First we pay back the bank: {n} coins left.":"Primero hay que pagar al banco: faltan {n} monedas.","We need at least 150 coins, the bank lends the rest.":"Necesitamos al menos 150 monedas, el banco presta el resto.","A trip costs 300 coins... let's play some more!":"Un viaje cuesta 300 monedas... \u00a1juguemos un poco m\u00e1s!","LOAN {n}? TAP AGAIN":"\u00bfPR\u00c9STAMO {n}? TOCA OTRA VEZ","BANK LOAN \u00b7 {n} COINS \u00b7 REPAID BACK HOME":"PR\u00c9STAMO \u00b7 {n} MONEDAS \u00b7 SE PAGA EN CASA","BANK LOAN \u00b7 {n} COINS LEFT \u00b7 EARNINGS REPAY IT":"PR\u00c9STAMO \u00b7 QUEDAN {n} MONEDAS \u00b7 LAS GANANCIAS LO PAGAN","Pay back the bank first. Your earnings go to the loan.":"Primero paga al banco. Tus ganancias van al pr\u00e9stamo.","LOAN PAID OFF!":"\u00a1PR\u00c9STAMO PAGADO!","BANK -{n}":"BANCO -{n}","WORLD TOP 10":"TOP 10 MUNDIAL","COMEBACK! +2 \u21bb NEXT GAME":"\u00a1REMONTADA! +2 \u21bb PR\u00d3XIMA PARTIDA"
 },
 de:{
 'SCORE':'PUNKTE','HI':'REKORD','ROTATE':'DREHEN','Fill a row or column to clear it.<br>Clear lines to feed Pixo.':'Fülle eine Reihe oder Spalte, um sie zu leeren.<br>Leere Linien, um Pixo zu füttern.',
@@ -452,7 +462,7 @@ de:{
 'TOO HARD':'ZU SCHWER','TOO EASY':'ZU LEICHT','CONTROLS':'STEUERUNG','LOOKS':'GRAFIK','SOUNDS':'TÖNE','PIXO':'PIXO','ADS':'WERBUNG','OTHER':'ANDERES',
 'RUG':'TEPPICH','PLANT':'PFLANZE','ROCKET POSTER':'RAKETEN-POSTER','WALL CLOCK':'WANDUHR','PHONE':'TELEFON','BOOMBOX':'GHETTOBLASTER','LAVA LAMP':'LAVALAMPE','BED':'BETT','OLD TV':'ALTER FERNSEHER','STAR LIGHTS':'LICHTERKETTE','BREAKFAST':'FRÜHSTÜCK','LUNCH':'MITTAGESSEN',
 'RECORD PLAYER':'PLATTENSPIELER','DESK + COMPUTER':'SCHREIBTISCH + PC','FRIDGE':'KÜHLSCHRANK','COFFEE MACHINE':'KAFFEEMASCHINE','FAN':'VENTILATOR','SOFA':'SOFA','UMBRELLA':'REGENSCHIRM','AQUARIUM':'AQUARIUM','HEATER':'HEIZLÜFTER','FISH FOOD':'FISCHFUTTER','CAKE':'TORTE',
-"PIXO'S BEACH":"PIXOS STRAND","HAMMOCK":"HÄNGEMATTE","TIKI TORCHES":"TIKI-FACKELN","PARASOL":"SONNENSCHIRM","SUN LOUNGER":"LIEGESTUHL","SURFBOARD":"SURFBRETT","TOWEL":"HANDTUCH","BUCKET & SPADE":"EIMER & SCHAUFEL","BEACH BALL":"WASSERBALL","SUNGLASSES":"SONNENBRILLE","ICE CREAM":"EIS","SUNSCREEN":"SONNENCREME","Swing, swing...":"Schaukeln...","Tiki time!":"Tiki-Zeit!","Nice shade...":"Schöner Schatten...","Surf's up!":"Ab aufs Brett!","Perfect spot!":"Perfekter Platz!","Sandcastle time!":"Sandburgen-Zeit!","Boing!":"Boing!","Pure relaxation...":"Pure Entspannung...","Ouch... the sun is burning!":"Autsch... die Sonne brennt!","So hot... I need something cold!":"So heiß... ich brauche was Kaltes!","The sun is going down...":"Die Sonne geht unter...","Low tide... perfect sand for building!":"Ebbe... perfekter Sand zum Bauen!","New flat: 300 coins + 40 a week. Beach holiday: 300 coins.":"Neue Wohnung: 300 Münzen + 40 pro Woche. Strandurlaub: 300 Münzen.","★ FLAT COMPLETE! TIME FOR A TRIP? ★":"★ WOHNUNG FERTIG! ZEIT FÜR EINE REISE? ★","Beach holiday: 300 coins. Rent is paused while Pixo is away.":"Strandurlaub: 300 Münzen. Die Miete ruht, solange Pixo weg ist.","★ BEST HOLIDAY EVER! WHAT'S NEXT? ★":"★ BESTER URLAUB ALLER ZEITEN! UND JETZT? ★","Head home to the flat, or the mountains soon.":"Zurück in die Wohnung, oder bald in die Berge.","A flat costs 300 coins + 40 a week.":"Eine Wohnung kostet 300 Münzen + 40 pro Woche.","BEACH · 300":"STRAND · 300","VISIT THE BEACH":"ZUM STRAND","BACK TO THE FLAT":"ZURÜCK IN DIE WOHNUNG","MOUNTAINS · SOON":"BERGE · BALD","OFF TO THE BEACH!":"AB AN DEN STRAND!","Pack your bags! Holiday time!":"Koffer packen! Urlaubszeit!","HOME SWEET HOME!":"ENDLICH ZU HAUSE!","Home sweet home!":"Endlich zu Hause!","A holiday costs 300 coins... let's play some more!":"Der Urlaub kostet 300 Münzen... spielen wir noch etwas!","PIXO FELL IN LOVE ♥":"PIXO HAT SICH VERLIEBT ♥","Who is that...? I think I'm in love!":"Wer ist das...? Ich glaube, ich bin verliebt!","Hi there, cutie! ♥":"Hallo, Süßer! ♥","Low tide! Look at the shells!":"Ebbe! Schau, die Muscheln!","What a sunset...":"Was für ein Sonnenuntergang...","Moonlight on the sea...":"Mondlicht auf dem Meer...","The sea is calm...":"Das Meer ist ruhig...","Ahh, protected!":"Ahh, geschützt!","My flat is perfect... maybe a trip?":"Meine Wohnung ist perfekt... vielleicht eine Reise?","Best holiday ever... what's next?":"Bester Urlaub aller Zeiten... und jetzt?","Back to the beach!":"Wieder am Strand!","The beach! Let's get some gear!":"Der Strand! Holen wir uns Ausrüstung!","Looking cool!":"Sieht cool aus!"
+"PIXO'S BEACH":"PIXOS STRAND","HAMMOCK":"HÄNGEMATTE","TIKI TORCHES":"TIKI-FACKELN","PARASOL":"SONNENSCHIRM","SUN LOUNGER":"LIEGESTUHL","SURFBOARD":"SURFBRETT","TOWEL":"HANDTUCH","BUCKET & SPADE":"EIMER & SCHAUFEL","BEACH BALL":"WASSERBALL","SUNGLASSES":"SONNENBRILLE","ICE CREAM":"EIS","SUNSCREEN":"SONNENCREME","Swing, swing...":"Schaukeln...","Tiki time!":"Tiki-Zeit!","Nice shade...":"Schöner Schatten...","Surf's up!":"Ab aufs Brett!","Perfect spot!":"Perfekter Platz!","Sandcastle time!":"Sandburgen-Zeit!","Boing!":"Boing!","Pure relaxation...":"Pure Entspannung...","Ouch... the sun is burning!":"Autsch... die Sonne brennt!","So hot... I need something cold!":"So heiß... ich brauche was Kaltes!","The sun is going down...":"Die Sonne geht unter...","Low tide... perfect sand for building!":"Ebbe... perfekter Sand zum Bauen!","New flat: 300 coins + 40 a week. Beach holiday: 300 coins.":"Neue Wohnung: 300 Münzen + 40 pro Woche. Strandurlaub: 300 Münzen.","★ FLAT COMPLETE! TIME FOR A TRIP? ★":"★ WOHNUNG FERTIG! ZEIT FÜR EINE REISE? ★","Beach holiday: 300 coins. Rent is paused while Pixo is away.":"Strandurlaub: 300 Münzen. Die Miete ruht, solange Pixo weg ist.","★ BEST HOLIDAY EVER! WHAT'S NEXT? ★":"★ BESTER URLAUB ALLER ZEITEN! UND JETZT? ★","Head home to the flat, or the mountains soon.":"Zurück in die Wohnung, oder bald in die Berge.","A flat costs 300 coins + 40 a week.":"Eine Wohnung kostet 300 Münzen + 40 pro Woche.","BEACH · 300":"STRAND · 300","VISIT THE BEACH":"ZUM STRAND","BACK TO THE FLAT":"ZURÜCK IN DIE WOHNUNG","MOUNTAINS · SOON":"BERGE · BALD","OFF TO THE BEACH!":"AB AN DEN STRAND!","Pack your bags! Holiday time!":"Koffer packen! Urlaubszeit!","HOME SWEET HOME!":"ENDLICH ZU HAUSE!","Home sweet home!":"Endlich zu Hause!","A holiday costs 300 coins... let's play some more!":"Der Urlaub kostet 300 Münzen... spielen wir noch etwas!","PIXO FELL IN LOVE ♥":"PIXO HAT SICH VERLIEBT ♥","Who is that...? I think I'm in love!":"Wer ist das...? Ich glaube, ich bin verliebt!","Hi there, cutie! ♥":"Hallo, Süßer! ♥","Low tide! Look at the shells!":"Ebbe! Schau, die Muscheln!","What a sunset...":"Was für ein Sonnenuntergang...","Moonlight on the sea...":"Mondlicht auf dem Meer...","The sea is calm...":"Das Meer ist ruhig...","Ahh, protected!":"Ahh, geschützt!","My flat is perfect... maybe a trip?":"Meine Wohnung ist perfekt... vielleicht eine Reise?","Best holiday ever... what's next?":"Bester Urlaub aller Zeiten... und jetzt?","Back to the beach!":"Wieder am Strand!","The beach! Let's get some gear!":"Der Strand! Holen wir uns Ausrüstung!","Looking cool!":"Sieht cool aus!","PIXO'S BATHROOM":"PIXOS BAD","BATHTUB":"BADEWANNE","RUBBER DUCK":"QUIETSCHEENTE","SINK + MIRROR":"WASCHBECKEN + SPIEGEL","WASHING MACHINE":"WASCHMASCHINE","TOWEL RACK":"HANDTUCHHALTER","BATH MAT":"BADEMATTE","FERN":"FARN","LAUNDRY BASKET":"W\u00c4SCHEKORB","TOOTHPASTE":"ZAHNPASTA","BUBBLE BATH":"SCHAUMBAD","Quack!":"Quak!","Fluffy towels!":"Flauschige Handt\u00fccher!","Soft on the feet!":"Sch\u00f6n weich f\u00fcr die F\u00fc\u00dfe!","It loves the steam!":"Er liebt den Dampf!","I feel all dusty from the trip...":"Ich bin ganz staubig von der Reise...","So much dirty laundry...":"So viel schmutzige W\u00e4sche...","Time to brush before bed?":"Z\u00e4hneputzen vor dem Schlafen?","LIVING ROOM":"WOHNZIMMER","BATHROOM":"BAD","Splash!":"Platsch!","Washing the holiday clothes!":"Die Urlaubsw\u00e4sche wird gewaschen!","Nothing to wash right now.":"Gerade gibt es nichts zu waschen.","Looking good!":"Gut siehst du aus!","Squeaky clean!":"Blitzsauber!","Frosted glass... cozy.":"Milchglas... gem\u00fctlich.","for the bathtub":"f\u00fcr die Badewanne","We need a bathtub first!":"Wir brauchen erst eine Badewanne!","Fresh breath!":"Frischer Atem!","Splish splash!":"Plitsch platsch!","An empty bathroom... let's fix it up!":"Ein leeres Bad... richten wir es ein!","The bathroom!":"Das Bad!","The living room!":"Das Wohnzimmer!","PIXO IN THE MOUNTAINS":"PIXO IN DEN BERGEN","TENT":"ZELT","SLEEPING BAG":"SCHLAFSACK","HIKING POLES":"WANDERST\u00d6CKE","SUMMIT FLAG":"GIPFELFAHNE","BACKPACK":"RUCKSACK","MAP":"KARTE","CAMPFIRE":"LAGERFEUER","HIKING BOOTS":"WANDERSCHUHE","HEADLAMP":"STIRNLAMPE","FUR JACKET":"PELZJACKE","BINOCULARS":"FERNGLAS","HOT TEA":"HEISSER TEE","Home sweet tent!":"Zelt, s\u00fc\u00dfes Zelt!","Ready to climb!":"Bereit zum Klettern!","For the summit!":"F\u00fcr den Gipfel!","Packed and ready!":"Gepackt und bereit!","The summit is that way!":"Der Gipfel ist dort lang!","Brrr... a cold morning up here.":"Brrr... ein kalter Morgen hier oben.","I can't see a thing in the dark...":"Im Dunkeln sehe ich gar nichts...","Evenings get chilly in the mountains...":"Abends wird es in den Bergen k\u00fchl...","It's snowing! I'm freezing!":"Es schneit! Ich friere!","Is that a bird way up there?":"Ist das ein Vogel da oben?","MADE IT TO THE TOP!":"GIPFEL ERREICHT!","Honestly... it's not as fun as it looks on social media.":"Ehrlich gesagt... es ist nicht so lustig, wie es auf Social Media aussieht.","Cozy fire...":"Gem\u00fctliches Feuer...","Zzz... under the stars":"Zzz... unter den Sternen","Clouds below my feet...":"Wolken unter meinen F\u00fc\u00dfen...","Something is circling up there...":"Da oben kreist etwas...","Snow everywhere!":"\u00dcberall Schnee!","What a view!":"Was f\u00fcr eine Aussicht!","Back on the trail!":"Wieder auf dem Weg!","The mountains! I need some gear!":"Die Berge! Ich brauche Ausr\u00fcstung!","Trips cost 300 coins. Rent is paused while Pixo is away.":"Reisen kosten 300 M\u00fcnzen. Die Miete ruht, solange Pixo weg ist.","Head home, or back to the mountains.":"Nach Hause, oder zur\u00fcck in die Berge.","Mountains: 300 coins. Short on coins? The bank lends up to 150.":"Berge: 300 M\u00fcnzen. Zu wenig? Die Bank leiht bis zu 150.","\u2605 SUMMIT REACHED! \u2605":"\u2605 GIPFEL ERREICHT! \u2605","Time to head home. Pixo needs a rest.":"Zeit, nach Hause zu gehen. Pixo braucht Ruhe.","MOUNTAINS \u00b7 300":"BERGE \u00b7 300","VISIT THE MOUNTAINS":"IN DIE BERGE","BACK HOME":"NACH HAUSE","BANK LOAN -{n}":"KREDIT -{n}","OFF TO THE MOUNTAINS!":"AB IN DIE BERGE!","Fresh mountain air! Let's get some gear!":"Frische Bergluft! Holen wir Ausr\u00fcstung!","Home again... and we owe the bank {n} coins.":"Wieder zu Hause... und wir schulden der Bank {n} M\u00fcnzen.","First we pay back the bank: {n} coins left.":"Zuerst zahlen wir die Bank zur\u00fcck: noch {n} M\u00fcnzen.","We need at least 150 coins, the bank lends the rest.":"Wir brauchen mindestens 150 M\u00fcnzen, den Rest leiht die Bank.","A trip costs 300 coins... let's play some more!":"Eine Reise kostet 300 M\u00fcnzen... spielen wir noch etwas!","LOAN {n}? TAP AGAIN":"KREDIT {n}? NOCHMAL TIPPEN","BANK LOAN \u00b7 {n} COINS \u00b7 REPAID BACK HOME":"KREDIT \u00b7 {n} M\u00dcNZEN \u00b7 ZU HAUSE ZUR\u00dcCKZAHLEN","BANK LOAN \u00b7 {n} COINS LEFT \u00b7 EARNINGS REPAY IT":"KREDIT \u00b7 NOCH {n} M\u00dcNZEN \u00b7 GEWINNE ZAHLEN IHN AB","Pay back the bank first. Your earnings go to the loan.":"Zahl erst die Bank zur\u00fcck. Deine Gewinne gehen an den Kredit.","LOAN PAID OFF!":"KREDIT ABBEZAHLT!","BANK -{n}":"BANK -{n}","WORLD TOP 10":"WELT TOP 10","COMEBACK! +2 \u21bb NEXT GAME":"COMEBACK! +2 \u21bb N\u00c4CHSTES SPIEL"
 }
 
 };
@@ -546,7 +556,8 @@ function renderHud(){renderRot();
   $('score').textContent=S.score; $('hi').textContent=Math.max(S.score,scores[0]?scores[0].s:0);
   const cb=$('combo');if(S.combo>1){cb.textContent=T('COMBO')+' x'+S.combo;cb.classList.add('on')}else cb.classList.remove('on');
 }
-function hiHTML(){if(!scores.length)return'<div><span>'+T('NO SCORES YET')+'</span></div>';return scores.map((s,i)=>`<div><span>${i+1}. ${s.n}</span><span>${String(s.s).padStart(5,'0')}</span></div>`).join('')}
+function hiHTML(){if(typeof LB!=='undefined'&&LB&&LB.length){let h='<div class="hd">'+T('WORLD TOP 10')+'</div>'+LB.map((r,i)=>`<div class="${r.id===LB.me?'me':''}"><span>${i+1}. ${String(r.n||'?????').slice(0,5)}</span><span>${String(r.s).padStart(5,'0')}</span></div>`).join('');if(myRank)h+=`<div class="me"><span>… ${myRank}. ${myName()}</span><span>${String(store.get('best',0)).padStart(5,'0')}</span></div>`;return h}
+  if(!scores.length)return'<div><span>'+T('NO SCORES YET')+'</span></div>';return scores.map((s,i)=>`<div><span>${i+1}. ${s.n}</span><span>${String(s.s).padStart(5,'0')}</span></div>`).join('')}
 function render(){renderBoard();renderTray();renderHud();renderPet();$('hiList').innerHTML=hiHTML();$('hiList2').innerHTML=hiHTML();
   $('ovTitle').hidden=S.state!=='title';$('ovOver').dataset.x=1;$('ovPause').hidden=S.state!=='pause';$('ovAd').hidden=S.state!=='ad';$('ovFb').hidden=S.state!=='fb';$('ovLang').hidden=S.state!=='lang';$('ovHome').hidden=S.state!=='home';document.querySelectorAll('.homebtn').forEach(b=>b.textContent=T("⌂ PIXO'S HOME")+' · '+coins+' '+T('COINS'));$('ovOver').hidden=!(S.state==='over'||S.state==='entry');
   screenEl.classList.toggle('invert',invert);document.querySelector('.console').classList.toggle('invert-shell',invert);
@@ -599,18 +610,22 @@ $('rotBtn').addEventListener('click',()=>{audio();if(S.state!=='play')return;
 function gameOver(){
   SFX.over();S.state='over';say(stageIdx()===0?'...':'Good game!','sad');
   $('overScore').textContent=T('SCORE')+' '+S.score;const bonus=Math.floor(S.score/100);addCoins(bonus);S.earned=(S.earned||0)+bonus;$('overCoins').textContent='+'+S.earned+' '+T('COINS');
+  const prevBest=store.get('best',scores[0]?scores[0].s:0),dr=store.get('drought',0);
+  if(S.score>prevBest){store.set('best',S.score);S.newBest=true;if(dr>=10&&prevBest>0){addBonusRot(2);setTimeout(()=>{SFX.secret();toast('COMEBACK! +2 ↻ NEXT GAME')},1200)}store.set('drought',0)}else store.set('drought',dr+1);
+  if(S.repaid)$('overCoins').textContent+=' · '+T('BANK -{n}',{n:S.repaid});
   const qualifies=S.score>0&&(scores.length<5||S.score>scores[scores.length-1].s);
-  if(qualifies){S.state='entry';ini=[0,0,0];buildIni()}
+  if(qualifies){S.state='entry';const nm=myName();ini=[0,1,2,3,4].map(i=>Math.max(0,AB.indexOf((nm[i]||' ').replace('_',' '))));buildIni()}
+  else if(S.newBest)lbSubmit(myName(),S.score);
   $('entry').hidden=!qualifies;$('overRest').hidden=qualifies;render();
 }
-let ini=[0,0,0];const AB='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ';
+let ini=[0,0,0,0,0];const AB='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ';
 function buildIni(){
   $('initials').innerHTML=ini.map((v,i)=>`<div class="ini"><button class="lbtn arrow" data-k="${i}" data-d="-1" aria-label="Letter ${i+1} up">▲</button><span>${AB[v]===' '?'_':AB[v]}</span><button class="lbtn arrow" data-k="${i}" data-d="1" aria-label="Letter ${i+1} down">▼</button></div>`).join('');
 }
 $('initials').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;ini[k]=(ini[k]+ +b.dataset.d+AB.length)%AB.length;SFX.blip();buildIni()});
 $('okBtn').addEventListener('click',()=>{
-  const n=ini.map(v=>AB[v]).join('').replace(/ /g,'_');
-  scores.push({n,s:S.score});scores.sort((a,b)=>b.s-a.s);scores=scores.slice(0,5);store.set('scores',scores);
+  const n=(ini.map(v=>AB[v]).join('').trim()||'PIXO').replace(/ /g,'_');
+  scores.push({n,s:S.score});scores.sort((a,b)=>b.s-a.s);scores=scores.slice(0,5);store.set('scores',scores);store.set('myName',n);if(S.newBest)lbSubmit(n,S.score);
   S.state='over';$('entry').hidden=true;$('overRest').hidden=false;SFX.start();render();
 });
 
@@ -715,16 +730,17 @@ let coins=store.get('coins',null),welcome=false;
 if(coins===null){coins=lifetime;store.set('coins',coins);welcome=lifetime>0}
 let owned=store.get('owned',[]),meals=store.get('meals',{});
 let home=store.get('place','room'),flat=store.get('flat',null);
-if(home==='flat'&&!flat)home='room';
+if((home==='flat'||home==='bath')&&!flat)home='room';
 let hatchDate=store.get('hatchDate',null);
 if(hatchDate===null&&lifetime>=8){hatchDate=new Date().getDate();store.set('hatchDate',hatchDate)}
 const RM={on:{tv:false,lamp:true,lights:true,heater:true,fan:true},px:50,dir:1,mode:'walk',until:0,jump:0,fx:[],sel:null,timer:null,f:0,prev:'title',music:0,tune:0,ring:0,sway:0,meal:null,bg:{},fridge:0,coffee:0,fishX:4,fishDir:1,moveArm:0};
 const RB=buf(128,112);
-function addCoins(n){if(n>0){coins+=n;store.set('coins',coins)}}
+function addCoins(n){if(n<=0)return;let d=store.get('debt',0);if(d>0&&home!=='mount'){const p=Math.min(d,n);d-=p;n-=p;store.set('debt',d);S.repaid=(S.repaid||0)+p;if(d===0)setTimeout(()=>toast('LOAN PAID OFF!'),900)}if(n>0){coins+=n;store.set('coins',coins)}}
 function addBonusRot(n){let b=store.get('bonusRot',0);b=b===true?1:(+b||0);store.set('bonusRot',b+n)}
-function ownedList(){return home==='flat'?flat.owned:home==='beach'?beach.owned:owned}
+function inFlat(){return home==='flat'||home==='bath'}
+function ownedList(){return inFlat()?flat.owned:home==='beach'?beach.owned:home==='mount'?mount.owned:owned}
 const has=id=>ownedList().includes(id);
-function addOwned(id){ownedList().push(id);if(home==='flat')store.set('flat',flat);else if(home==='beach')store.set('beach',beach);else store.set('owned',owned)}
+function addOwned(id){ownedList().push(id);if(inFlat())store.set('flat',flat);else if(home==='beach')store.set('beach',beach);else if(home==='mount')store.set('mount',mount);else store.set('owned',owned)}
 const petLv=()=>stageIdx()+1;
 const today=()=>new Date().toDateString();
 const H=()=>new Date().getHours();
@@ -759,7 +775,7 @@ function itemOf(id){return P().items.find(i=>i.id===id)}
 function needMet(n){if(n.met)return n.met();const it=itemOf(n.id);return it.food?meals[n.id]===today():has(n.id)}
 function activeNeeds(){return P().needs.filter(n=>n.when()&&!needMet(n)&&petLv()>=(itemOf(n.id).lv||1))}
 function takeHint(){if(store.get('hintDone',false))return null;const n=activeNeeds().find(n=>n.hint);if(!n)return null;store.set('hintDone',true);return n.hint}
-function rentDue(){return home==='flat'&&Date.now()>flat.paidUntil}
+function rentDue(){return inFlat()&&Date.now()>flat.paidUntil}
 function payRent(){if(!rentDue())return;if(coins>=40){coins-=40;store.set('coins',coins);flat.paidUntil=Date.now()+7*864e5;store.set('flat',flat);setTimeout(()=>toast('RENT PAID -40'),300)}}
 function roomComplete(){return ROOM_ITEMS.filter(i=>!i.food).every(i=>owned.includes(i.id))}
 
@@ -957,7 +973,9 @@ const PLACES={
   flat:{title:"PIXO'S FLAT",items:FLAT_ITEMS,needs:FLAT_NEEDS,win:[62,4,98,36],walk:[46,66],petY:80,eatX:46,plate:{x:70,y:98},seat:{x:8,y:76}}
 };
 function P(){return PLACES[home]}
-function bgFor(night){if(home==='beach'){const ph=beachPhase(),lo=isLowTide(),k='b'+ph+lo;if(!RM.bg[k])RM.bg[k]=buildBeachBG(ph,lo);return RM.bg[k]}const key=home+(night?'n':'d');if(!RM.bg[key])RM.bg[key]=home==='room'?buildBG(night):buildFlatBG(night);return RM.bg[key]}
+function bgFor(night){if(home==='mount'){if(mount.summit){if(!RM.bg.summit)RM.bg.summit=buildSummitBG();return RM.bg.summit}const ph=beachPhase(),sn=isWetDay(),k='m'+ph+sn;if(!RM.bg[k])RM.bg[k]=buildMountBG(ph,sn);return RM.bg[k]}
+  if(home==='bath'){const k='bath'+(night?'n':'d');if(!RM.bg[k])RM.bg[k]=buildBathBG(night);return RM.bg[k]}
+  if(home==='beach'){const ph=beachPhase(),lo=isLowTide(),k='b'+ph+lo;if(!RM.bg[k])RM.bg[k]=buildBeachBG(ph,lo);return RM.bg[k]}const key=home+(night?'n':'d');if(!RM.bg[key])RM.bg[key]=home==='room'?buildBG(night):buildFlatBG(night);return RM.bg[key]}
 /* ---------- the beach ---------- */
 const SANDC={b:'#e6c27f',l:'#f2d49b',s:'#c9a36b'};
 const BEACH_ITEMS=[
@@ -1046,74 +1064,237 @@ function drawBeachDyn(c,phase,f){
   if(low){const cx=50+Math.round(Math.sin(f/10)*10);dot(c,cx,shore+3,'#e5484d',4,2);dot(c,cx-1,shore+2,'#e5484d');dot(c,cx+4,shore+2,'#e5484d');dot(c,cx+1,shore+2,OL);dot(c,cx+2,shore+2,OL)}
 }
 PLACES.beach={title:"PIXO'S BEACH",items:BEACH_ITEMS,needs:BEACH_NEEDS,win:[0,36,128,56],walk:[28,80],petY:82,eatX:30,plate:{x:56,y:100},seat:{x:72,y:58}};
+/* ---------- the flat's bathroom ---------- */
+
+const PORC={b:'#f6f8fb',l:'#ffffff',s:'#cdd5df'};
+const BATH_ITEMS=[
+ {id:'tub',name:'BATHTUB',price:160,lv:1,x:2,y:58,w:54,h:36,layer:0},
+ {id:'duck',name:'RUBBER DUCK',price:15,lv:1,x:40,y:52,w:10,h:8,layer:0,say:'Quack!'},
+ {id:'sink',name:'SINK + MIRROR',price:120,lv:1,x:60,y:24,w:24,h:70,layer:0},
+ {id:'washer',name:'WASHING MACHINE',price:150,lv:1,x:88,y:56,w:24,h:38,layer:0},
+ {id:'rack',name:'TOWEL RACK',price:50,lv:1,x:112,y:28,w:14,h:26,layer:0,say:'Fluffy towels!'},
+ {id:'mat',name:'BATH MAT',price:25,lv:1,x:30,y:97,w:30,h:7,layer:1,say:'Soft on the feet!'},
+ {id:'fern',name:'FERN',price:40,lv:1,x:110,y:78,w:18,h:32,layer:3,say:'It loves the steam!'},
+ {id:'basket',name:'LAUNDRY BASKET',price:35,lv:1,x:2,y:92,w:16,h:18,layer:3},
+ {id:'toothpaste',name:'TOOTHPASTE',price:5,lv:1,w:12,h:12,food:'brush'},
+ {id:'bubbles',name:'BUBBLE BATH',price:10,lv:1,w:10,h:16,food:'bath'}
+];
+const BATH_NEEDS=[
+ {id:'bubbles',when:()=>!!(flat&&flat.dirty),met:()=>false,hint:'I feel all dusty from the trip...'},
+ {id:'washer',when:()=>!!(flat&&flat.laundry),hint:'So much dirty laundry...'},
+ {id:'toothpaste',when:()=>inHours(H(),21,23),hint:'Time to brush before bed?'}
+];
+Object.assign(DRAW,{
+  tub(c,x,y,f){shadow(c,x+27,y+36,24,2);dot(c,x+6,y+30,OL,4,6);dot(c,x+44,y+30,OL,4,6);dot(c,x+7,y+31,'#d9b44a',2,4);dot(c,x+45,y+31,'#d9b44a',2,4);
+    for(let j=0;j<24;j++){const inset=j<18?0:Math.round((j-18)*1.2);dot(c,x+inset,y+8+j,OL,54-inset*2,1);if(j>0&&j<23)dot(c,x+inset+1,y+8+j,j<3?PORC.l:j>18?PORC.s:PORC.b,52-inset*2,1)}
+    dot(c,x+3,y+10,'#9fd8f0',48,3);dot(c,x+48,y,OL,2,10);dot(c,x+46,y,OL,6,2);dot(c,x+47,y+1,'#d8d8e4',4,1);
+    if(RM.bath>Date.now()){for(let i=0;i<9;i++){const bx=x+4+((i*13+(f>>1))%46),by=y+6-((i*7+f)%5);ell(c,0,0,bx,by,2.5,2,{b:'#ffffff',s:'#dceefa'},{ol:''})}}},
+  duck(c,x,y,f){const b=RM.bath>Date.now()?((f>>1)%2):0;ell(c,0,0,x+5,y+5-b,4,2.6,{b:'#ffd166',l:'#fff0b3',s:'#e0a53a'});ell(c,0,0,x+7,y+2-b,2.4,2.2,{b:'#ffd166',l:'#fff0b3'});dot(c,x+9,y+2-b,'#ff8a3d',2,1);dot(c,x+7,y+1-b,OL)},
+  sink(c,x,y,f){box(c,x+1,y,22,24,{b:'#d9c49a',l:'#efe0bc',s:'#b89c6a'});box(c,x+3,y+2,18,20,{b:'#cfe6f2',l:'#ffffff',s:'#a9c6d6'});
+    if(RM.brush>Date.now()){drawPixo(c,x+0,y+2,stageIdx(),{pal:tanPal(),noShadow:true});dot(c,x+3,y+2,'rgba(207,230,242,.45)',18,20)}
+    dot(c,x+5,y+4,'#ffffff',2,1);dot(c,x+5,y+5,'#ffffff',1,3);dot(c,x+10,y+30,OL,4,3);
+    box(c,x,y+33,24,8,PORC);dot(c,x+10,y+28,'#d8d8e4',4,1);dot(c,x+11,y+29,'#d8d8e4',1,4);
+    box(c,x+8,y+41,8,28,PORC);dot(c,x+3,y+34,'#4aa3f0',2,3);dot(c,x+18,y+33,'#ffffff',3,4);dot(c,x+18,y+31,'#3fc79a',3,2)},
+  washer(c,x,y,f){shadow(c,x+12,y+38,12,1.5);box(c,x,y,24,38,PORC);dot(c,x+1,y+8,OL,22,1);dot(c,x+3,y+3,'#3fc79a',2,2);dot(c,x+17,y+3,OL,4,3);dot(c,x+18,y+4,'#d8d8e4',2,1);
+    ell(c,0,0,x+12,y+22,8,8,{b:'#a9b8c8',s:'#7d8da0'});ell(c,0,0,x+12,y+22,6,6,{b:'#5a7aa0',l:'#8fb0d6'},{ol:''});
+    if(RM.wash>Date.now()){const a=f*.7;for(let k=0;k<3;k++)dot(c,Math.round(x+12+Math.cos(a+k*2.1)*3.5),Math.round(y+22+Math.sin(a+k*2.1)*3.5),['#e5484d','#ffd166','#ffffff'][k],2,2)}
+    dot(c,x+8,y+17,'rgba(255,255,255,.6)',2,1)},
+  rack(c,x,y){dot(c,x,y+2,OL,14,2);dot(c,x+1,y+2,'#d8d8e4',12,1);dot(c,x+1,y,OL,2,4);dot(c,x+11,y,OL,2,4);
+    box(c,x+2,y+3,10,20,{b:'#4aa3f0',l:'#7cc0f7',s:'#2f7fc4'});for(let j=6;j<20;j+=4)dot(c,x+3,y+j,'#ffffff',8,1)},
+  mat(c,x,y){box(c,x,y,30,7,{b:'#6ee7a8',l:'#a8f0cb',s:'#3fc79a'});for(let i=2;i<28;i+=3)dot(c,x+i,y+7,'#3fc79a')},
+  fern(c,x,y,f){shadow(c,x+9,y+31,8,1.5);const s=(f>>2)%2?1:0;
+    [[-7,-6],[-4,-10],[0,-12],[4,-10],[7,-6],[-8,0],[8,0]].forEach(([dx,dy])=>{line(c,x+9,y+16,x+9+dx+s,y+12+dy,'#2f7d4b');line(c,x+9,y+17,x+9+dx+s,y+13+dy,'#4caf6e')});
+    box(c,x+3,y+18,12,13,{b:'#f4f1ea',l:'#ffffff',s:'#cfc8bb'});dot(c,x+4,y+23,'#4aa3f0',10,1)},
+  basket(c,x,y){box(c,x,y+4,16,14,{b:'#c9a36b',l:'#e6c27f',s:'#9a7a48'});for(let i=2;i<15;i+=3)dot(c,x+i,y+6,'#9a7a48',1,10);
+    if(flat&&flat.laundry){dot(c,x+3,y+1,'#e5484d',5,4);dot(c,x+8,y,'#4aa3f0',5,5)}},
+  toothpaste(c,x,y){box(c,x,y+4,12,6,{b:'#ffffff',s:'#d6d9e6'});dot(c,x+2,y+6,'#4aa3f0',6,2);box(c,x+9,y+5,3,4,{b:'#e5484d'})},
+  bubbles(c,x,y){box(c,x+1,y+5,8,11,{b:'#ff8fb1',l:'#ffc2d4',s:'#e0668f'});box(c,x+2,y+2,6,4,{b:'#ffffff',s:'#d6d9e6'});ell(c,0,0,x+3,y,1.6,1.6,{b:'#ffffff'},{ol:''});ell(c,0,0,x+7,y-1,1.2,1.2,{b:'#ffffff'},{ol:''})}
+});
+function buildBathBG(night){
+  const b=buf(128,112),c=b.getContext('2d');
+  for(let y=0;y<30;y++)for(let x=0;x<128;x++)dot(c,x,y,dith(x,y,.1+.3*(y/30))?'#dceaf0':'#eaf3f6');
+  dot(c,0,0,'#c7d6de',128,1);
+  for(let y=30;y<64;y++)for(let x=0;x<128;x++){const g=(x%8===0)||(y-30)%8===0;dot(c,x,y,g?'#a9cdd8':dith(x,y,.2)?'#c4e2ea':'#d3ebf1')}
+  dot(c,0,30,'#ffffff',128,1);dot(c,0,31,'#9fc3cf',128,1);
+  dot(c,0,63,OL,128,1);dot(c,0,64,'#eef2f6',128,3);dot(c,0,67,'#c9d2dc',128,1);dot(c,0,68,OL,128,1);
+  for(let y=69;y<112;y++)for(let x=0;x<128;x++){const t=(((x>>3)+((y-69)>>3))&1);dot(c,x,y,t?(dith(x,y,.3)?'#b9c3cf':'#c7d0db'):(dith(x,y,.15)?'#eef1f5':'#f7f9fb'))}
+  dot(c,0,69,'rgba(30,25,40,.25)',128,1);
+  box(c,92,6,24,18,{b:'#ffffff',s:'#d6dde6'});for(let j=8;j<22;j++)for(let i=94;i<114;i++)dot(c,i,j,dith(i,j,.5)?(night?'#5a6aa8':'#cfe6f2'):(night?'#3a4580':'#e9f5fb'));dot(c,103,8,'#ffffff',2,14);
+  return b;
+}
+function drawBathExtras(c,f){
+  if(flat&&flat.laundry){[[66,99,'#e5484d'],[72,97,'#4aa3f0'],[78,100,'#ffd166'],[70,102,'#3fc79a'],[76,103,'#a77bf3']].forEach(([x,y,col])=>box(c,x,y,9,5,{b:col}));}
+}
+PLACES.bath={title:"PIXO'S BATHROOM",items:BATH_ITEMS,needs:BATH_NEEDS,win:[92,6,116,24],walk:[22,70],petY:80,eatX:30,plate:{x:56,y:98},seat:{x:16,y:54}};
+
+/* ---------- the mountains ---------- */
+const MOUNT_ITEMS=[
+ {id:'tent',name:'TENT',price:120,lv:1,x:84,y:60,w:40,h:32,layer:0,say:'Home sweet tent!'},
+ {id:'sleepbag',name:'SLEEPING BAG',price:80,lv:1,x:92,y:84,w:26,h:8,layer:0},
+ {id:'poles',name:'HIKING POLES',price:35,lv:1,x:22,y:68,w:10,h:32,layer:0,say:'Ready to climb!'},
+ {id:'flag',name:'SUMMIT FLAG',price:70,lv:1,x:56,y:44,w:12,h:26,layer:0,say:'For the summit!'},
+ {id:'backpack',name:'BACKPACK',price:40,lv:1,x:2,y:84,w:16,h:20,layer:3,say:'Packed and ready!'},
+ {id:'map',name:'MAP',price:15,lv:1,x:20,y:102,w:16,h:8,layer:3,say:'The summit is that way!'},
+ {id:'campfire',name:'CAMPFIRE',price:60,lv:1,x:98,y:94,w:20,h:16,layer:3},
+ {id:'boots',name:'HIKING BOOTS',price:30,lv:1,w:16,h:10,accessory:true},
+ {id:'headlamp',name:'HEADLAMP',price:45,lv:1,w:14,h:8,accessory:true},
+ {id:'jacket',name:'FUR JACKET',price:90,lv:1,w:16,h:14,accessory:true},
+ {id:'binoculars',name:'BINOCULARS',price:50,lv:1,w:14,h:8,accessory:true},
+ {id:'tea',name:'HOT TEA',price:6,lv:1,w:19,h:14,food:'pixo'}
+];
+let mount=store.get('mount',null);
+if(home==='mount'&&!mount)home='room';
+const eagleTime=()=>!isWetDay()&&inHours(H(),10,16);
+const coldMorning=()=>inHours(H(),6,10);
+const MOUNT_NEEDS=[
+ {id:'tea',when:coldMorning,hint:'Brrr... a cold morning up here.'},
+ {id:'headlamp',when:()=>H()>=21||H()<6,hint:"I can't see a thing in the dark..."},
+ {id:'campfire',when:()=>inHours(H(),18,21),hint:'Evenings get chilly in the mountains...'},
+ {id:'jacket',when:isWetDay,hint:"It's snowing! I'm freezing!"},
+ {id:'binoculars',when:eagleTime,hint:'Is that a bird way up there?'}
+];
+const FUR={b:'#8a5a3c',l:'#a8744f',s:'#6b4229'};
+Object.assign(DRAW,{
+  tent(c,x,y,f){shadow(c,x+20,y+32,20,2);for(let j=0;j<30;j++){const hw=Math.round(j*.66);dot(c,x+20-hw,y+j,OL,hw*2+1,1);if(j>0)dot(c,x+21-hw,y+j,j<4?'#ffb070':'#ff8a3d',hw*2-1,1)}
+    for(let j=6;j<30;j++){const hw=Math.round((j-6)*.3);dot(c,x+20-hw,y+j,OL,hw*2+1,1);if(j>6)dot(c,x+21-hw,y+j,'#5a3a2a',hw*2-1,1)}
+    dot(c,x+20,y-3,OL,1,4);dot(c,x+21,y-3,'#e5484d',3,2)},
+  sleepbag(c,x,y){box(c,x,y,26,8,{b:'#4aa3f0',l:'#7cc0f7',s:'#2f7fc4'});for(let i=4;i<24;i+=5)dot(c,x+i,y+1,'#2f7fc4',1,6);ell(c,0,0,x+3,y+4,3,3,{b:'#ffffff',s:'#d6d9e6'})},
+  poles(c,x,y){line(c,x+2,y,x+3,y+30,OL);line(c,x+7,y+1,x+6,y+31,OL);dot(c,x+1,y,'#e5484d',3,4);dot(c,x+6,y+1,'#e5484d',3,4);ell(c,0,0,x+5,y+31,5,1.5,{b:'#6b8a4a'},{ol:''})},
+  flag(c,x,y,f){ell(c,0,0,x+6,y+24,6,3,{b:'#9aa6b4',l:'#c3ccd6',s:'#6b7684'});dot(c,x+5,y,OL,1,24);const w=(f>>1)%2;dot(c,x+6,y+1,'#e5484d',6,2);dot(c,x+6,y+3,'#ffffff',6+w,2);dot(c,x+6,y+5,'#e5484d',6-w,2)},
+  backpack(c,x,y){shadow(c,x+8,y+20,8,1.5);box(c,x+1,y+2,14,18,{b:'#3fc79a',l:'#6ee7a8',s:'#2a9a76'});box(c,x+3,y,10,6,{b:'#2a9a76',s:'#1f7a5c'});box(c,x+3,y+10,10,6,{b:'#2a9a76'});dot(c,x+7,y+12,'#ffd166',2,1);ell(c,0,0,x+8,y+20,7,2,{b:'#4aa3f0'},{ol:''})},
+  map(c,x,y){box(c,x,y,16,8,{b:'#f2e6c9',l:'#fff6df',s:'#d9c49a'});line(c,x+2,y+5,x+7,y+2,'#e5484d');line(c,x+7,y+2,x+13,y+5,'#e5484d');dot(c,x+12,y+4,'#e5484d',2,2);dot(c,x+5,y+1,'#3fc79a',2,2)},
+  campfire(c,x,y,f){shadow(c,x+10,y+14,10,1.5);[[2,11],[6,13],[12,13],[16,11]].forEach(([a,b])=>ell(c,0,0,x+a,y+b,2.5,2,{b:'#9aa6b4',s:'#6b7684'}));
+    line(c,x+3,y+12,x+16,y+8,'#844b2b');line(c,x+3,y+8,x+16,y+12,'#a8653d');
+    const fl=(f>>1)%3;ell(c,0,0,x+10,y+5-fl*.5,4,5+fl*.5,{b:'#ff8a3d',l:'#ffd166'},{ol:''});ell(c,0,0,x+10,y+6,2,3,{b:'#fff3c4'},{ol:''});
+    if(f%6<3)dot(c,x+8+((f>>1)%5),y-3-((f>>2)%3),'#ffd166')},
+  boots(c,x,y){box(c,x,y+3,7,7,{b:'#8a5a3c',l:'#a8744f',s:'#6b4229'});box(c,x+9,y+3,7,7,{b:'#8a5a3c',l:'#a8744f',s:'#6b4229'});dot(c,x+1,y+8,'#3a2a1f',6,1);dot(c,x+10,y+8,'#3a2a1f',6,1);dot(c,x+2,y+4,'#ffd166',3,1);dot(c,x+11,y+4,'#ffd166',3,1)},
+  headlamp(c,x,y){dot(c,x,y+3,OL,14,2);dot(c,x+1,y+3,'#e5484d',12,1);box(c,x+4,y,6,6,{b:'#3a3550'});dot(c,x+6,y+2,'#ffd166',2,2)},
+  jacket(c,x,y){box(c,x+1,y+2,14,12,FUR);dot(c,x+2,y+3,'#f4ecdc',12,2);dot(c,x+7,y+5,'#6b4229',1,8);dot(c,x+5,y+7,'#ffd166');dot(c,x+5,y+10,'#ffd166')},
+  binoculars(c,x,y){ell(c,0,0,x+3.5,y+4,3.5,3.5,{b:'#3a3550',l:'#5a5475'});ell(c,0,0,x+10.5,y+4,3.5,3.5,{b:'#3a3550',l:'#5a5475'});dot(c,x+6,y+3,OL,2,2);dot(c,x+2,y+3,'#6cb6ff');dot(c,x+9,y+3,'#6cb6ff')},
+  tea(c,x,y){drawMeal(c,x,y+4,'tea',1)}
+});
+function buildMountBG(phase,snow){
+  const b=buf(128,112),c=b.getContext('2d');
+  const SKY=snow?['#8a97a8','#a4b0bf','#c3ccd6']:{day:['#5fa8e8','#8fc8f4','#c4e6ff'],sunset:['#6a4f9e','#e8735a','#ffcf7a'],night:['#0f1230','#1a1f48','#2a2f66']}[phase];
+  for(let y=0;y<60;y++)for(let x=0;x<128;x++){const t=y/59,a=t<.5?0:1,tt=t<.5?t*2:(t-.5)*2;dot(c,x,y,dith(x,y,tt)?SKY[a+1]:SKY[a])}
+  if(phase==='night'&&!snow)[[8,6],[26,14],[48,4],[66,10],[90,6],[110,16],[120,3]].forEach(([x,y])=>dot(c,x,y,'#fff3c4'));
+  if(!snow&&phase==='day')ell(c,0,0,20,12,5,5,{b:'#ffd166',l:'#fff0b3'},{ol:''});
+  if(!snow&&phase==='night')ell(c,0,0,22,10,4,4,{b:'#fff3c4',s:'#e6d38a'},{ol:''});
+  const far=phase==='night'?['#2a3060','#3a4278']:phase==='sunset'?['#6b4f86','#8a6aa0']:['#7f93b8','#9aaccc'];
+  const peak=(cx,top,base,hw,cols,capCol)=>{for(let y=top;y<base;y++){const w=Math.round((y-top)/(base-top)*hw);for(let x=cx-w;x<=cx+w;x++){const snowy=y<top+(base-top)*.3;dot(c,x,y,snowy?(dith(x,y,.3)?capCol:'#ffffff'):(x<cx?cols[1]:cols[0]))}}};
+  peak(30,18,62,34,far,'#dfe8f2');peak(96,8,62,44,far,'#dfe8f2');peak(64,24,62,30,phase==='night'?['#222850','#30386a']:['#6f84a8','#8a9ec0'],'#e8eef6');
+  const hill=phase==='night'?['#1f3a2a','#2a4a34']:phase==='sunset'?['#4a6a3a','#5a7a44']:['#4c8f4a','#5fa658'];
+  for(let x=0;x<128;x++){const h=60+Math.round(Math.sin(x/14)*3+Math.sin(x/5)*1);for(let y=h;y<72;y++)dot(c,x,y,dith(x,y,(y-h)/12)?hill[0]:hill[1])}
+  [[6,58],[16,56],[110,57],[120,59],[40,60]].forEach(([px,py])=>{for(let j=0;j<12;j++){const w=Math.round(j*.4);dot(c,px-w,py-12+j,phase==='night'?'#14281c':'#2f6a3a',w*2+1,1)}dot(c,px,py,'#5a3a2a',1,3)});
+  const grass=snow?['#e8eef6','#ffffff']:phase==='night'?['#1f3a2a','#2a4a34']:['#5fa658','#7fc070'];
+  for(let y=70;y<112;y++)for(let x=0;x<128;x++)dot(c,x,y,dith(x,y,.2+.4*((y-70)/42))?grass[0]:grass[1]);
+  if(!snow){let s=5;const r=()=>(s=(s*16807)%2147483647)/2147483647;for(let n=0;n<26;n++)dot(c,r()*128|0,74+(r()*36|0),['#ffd166','#ffffff','#ff8fb1','#a77bf3'][n%4])}
+  for(let y=96;y<112;y++){const cx=60+Math.round((y-96)*.8);dot(c,cx-5,y,snow?'#d6dde6':'#c9a36b',10+((y-96)>>1),1)}
+  return b;
+}
+function buildSummitBG(){
+  const b=buf(128,112),c=b.getContext('2d');
+  for(let y=0;y<112;y++)for(let x=0;x<128;x++)dot(c,x,y,dith(x,y,y/111)?'#b9c4d2':'#9aa6b8');
+  for(let k=0;k<5;k++){const cy=70+k*9;for(let x=0;x<128;x++){const h=Math.round(Math.sin((x+k*17)/9)*3);dot(c,x,cy+h,'#eef2f6',1,6)}}
+  for(let y=40;y<112;y++){const w=Math.round((y-40)*.9);for(let x=64-w;x<=64+w;x++)dot(c,x,y,y<60?(dith(x,y,.4)?'#ffffff':'#e8eef6'):(dith(x,y,.5)?'#7a8698':'#8e9aac'))}
+  for(let y=40;y<112;y+=6){const w=Math.round((y-40)*.9);dot(c,64-w,y,'#ffffff',w*2,2)}
+  return b;
+}
+function drawMountDyn(c,f,summit){
+  const snow=isWetDay()||summit;
+  if(snow)for(let n=0;n<26;n++){const sx=(n*37+f*(1+n%2))%128,sy=(n*23+f*2)%112;dot(c,sx,sy,'#ffffff')}
+  if(!summit&&eagleTime()){const a=f/16,ex=64+Math.cos(a)*30,ey=22+Math.sin(a)*8;line(c,ex-4,ey,ex,ey+2,OL);line(c,ex,ey+2,ex+4,ey,OL);dot(c,ex,ey+2,'#ffffff')}
+}
+PLACES.mount={title:'PIXO IN THE MOUNTAINS',items:MOUNT_ITEMS,needs:MOUNT_NEEDS,win:[0,0,128,40],walk:[26,64],petY:80,eatX:30,plate:{x:52,y:98},seat:{x:92,y:70}};
+function startSummit(){if(!mount||mount.summit)return;mount.summit=true;store.set('mount',mount);RM.summitAt=Date.now();RM.px=52;RM.mode='idle';RM.until=Date.now()+8000;SFX.grow();toast('MADE IT TO THE TOP!');
+  setTimeout(()=>roomSay("Honestly... it's not as fun as it looks on social media."),2600)}
+
 /* chapters: what comes next once a place is complete */
-function placeComplete(){return P().items.filter(i=>!i.food&&!i.carried).every(i=>has(i.id))}
+function placeComplete(){if(inFlat())return [...FLAT_ITEMS,...BATH_ITEMS].filter(i=>!i.food&&!i.carried).every(i=>flat.owned.includes(i.id));return P().items.filter(i=>!i.food&&!i.carried).every(i=>has(i.id))}
 function chapterOpts(){
   if(home==='room')return{title:"★ ROOM COMPLETE! WHAT'S NEXT? ★",note:'New flat: 300 coins + 40 a week. Beach holiday: 300 coins.',a:'flat',b:beach?'visitbeach':'beach'};
-  if(home==='flat')return{title:'★ FLAT COMPLETE! TIME FOR A TRIP? ★',note:'Beach holiday: 300 coins. Rent is paused while Pixo is away.',a:beach?'visitbeach':'beach',b:'mountains'};
-  return{title:"★ BEST HOLIDAY EVER! WHAT'S NEXT? ★",note:flat?'Head home to the flat, or the mountains soon.':'A flat costs 300 coins + 40 a week.',a:flat?'backflat':'flat',b:'mountains'};
+  if(inFlat())return{title:'★ FLAT COMPLETE! TIME FOR A TRIP? ★',note:'Trips cost 300 coins. Rent is paused while Pixo is away.',a:beach?'visitbeach':'beach',b:mount?'visitmount':'mountains'};
+  if(home==='beach')return{title:"★ BEST HOLIDAY EVER! WHAT'S NEXT? ★",note:mount?'Head home, or back to the mountains.':'Mountains: 300 coins. Short on coins? The bank lends up to 150.',a:flat?'backflat':'flat',b:mount?'visitmount':'mountains'};
+  return{title:'★ SUMMIT REACHED! ★',note:'Time to head home. Pixo needs a rest.',a:'gohome',b:null};
 }
-const CH_LABEL={flat:'NEW FLAT · 300',beach:'BEACH · 300',visitbeach:'VISIT THE BEACH',backflat:'BACK TO THE FLAT',mountains:'MOUNTAINS · SOON'};
+const CH_LABEL={flat:'NEW FLAT · 300',beach:'BEACH · 300',visitbeach:'VISIT THE BEACH',backflat:'BACK TO THE FLAT',mountains:'MOUNTAINS · 300',visitmount:'VISIT THE MOUNTAINS',gohome:'BACK HOME'};
 let chArm='';
 function renderChapter(){const ch=$('chapter'),show=placeComplete();ch.hidden=!show;if(!show)return;const o=chapterOpts();
   $('chTitle').textContent=T(o.title);$('chNote').textContent=T(o.note);
-  [['chA',o.a],['chB',o.b]].forEach(([id,act])=>{const b=$(id);b.dataset.act=act;b.disabled=act==='mountains';if(chArm!==act)b.textContent=T(CH_LABEL[act])})}
+  [['chA',o.a],['chB',o.b]].forEach(([id,act])=>{const b=$(id);b.hidden=!act;if(!act)return;b.dataset.act=act;b.disabled=false;if(chArm!==act)b.textContent=T(CH_LABEL[act])})}
+function pauseRent(){if(inFlat()&&!flat.pausedAt){flat.pausedAt=Date.now();store.set('flat',flat)}}
+function backToFlat(){if(flat.pausedAt){flat.paidUntil+=Date.now()-flat.pausedAt;delete flat.pausedAt}flat.dirty=true;flat.laundry=true;store.set('flat',flat);home='flat'}
 function goPlace(act){
-  const now=Date.now();
+  const now=Date.now(),debt=()=>store.get('debt',0);
   if(act==='flat'){coins-=300;flat={owned:['poster','clock','bed','lamp'],paidUntil:now+7*864e5,fishFedAt:0,movedAt:now};store.set('flat',flat);home='flat';
     toast('MOVED IN! RENT PAID 7 DAYS');roomSay('Our new flat! My bed, clock, lamp and poster came along!')}
   else if(act==='beach'||act==='visitbeach'){if(act==='beach'){coins-=300;beach={owned:[],at:now,met:false};store.set('beach',beach)}
-    if(home==='flat'){flat.pausedAt=now;store.set('flat',flat)}home='beach';toast('OFF TO THE BEACH!');roomSay('Pack your bags! Holiday time!')}
-  else if(act==='backflat'){if(flat.pausedAt){flat.paidUntil+=now-flat.pausedAt;delete flat.pausedAt;store.set('flat',flat)}home='flat';toast('HOME SWEET HOME!');roomSay('Home sweet home!')}
+    pauseRent();home='beach';toast('OFF TO THE BEACH!');roomSay('Pack your bags! Holiday time!')}
+  else if(act==='mountains'||act==='visitmount'){if(act==='mountains'){if(coins>=300)coins-=300;else{const loan=300-coins;coins=0;store.set('debt',debt()+loan);setTimeout(()=>toast(T('BANK LOAN -{n}',{n:loan})),600)}mount={owned:[],at:now,summit:false};store.set('mount',mount)}
+    pauseRent();home='mount';toast('OFF TO THE MOUNTAINS!');roomSay('Fresh mountain air! Let\'s get some gear!')}
+  else if(act==='backflat'){backToFlat();toast('HOME SWEET HOME!');roomSay('Home sweet home!')}
+  else if(act==='gohome'){if(flat)backToFlat();else home='room';toast('HOME SWEET HOME!');
+    roomSay(debt()>0?T('Home again... and we owe the bank {n} coins.',{n:debt()}):'Home sweet home!')}
   store.set('coins',coins);store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.jump=6;RM.meal=null;SFX.grow();render();renderShop();drawRoom();
 }
-function chapterClick(e){audio();const act=e.currentTarget.dataset.act;if(!act||act==='mountains')return;
-  const cost=(act==='flat'||act==='beach')?300:0;
-  if(coins<cost){SFX.bad();roomSay(act==='flat'?"Moving costs 300 coins... let's play some more!":"A holiday costs 300 coins... let's play some more!");return}
-  if(chArm!==act){chArm=act;e.currentTarget.textContent=T('SURE? TAP AGAIN');SFX.blip();setTimeout(()=>{if(chArm===act){chArm='';renderChapter()}},3000);return}
+function chapterClick(e){audio();const act=e.currentTarget.dataset.act;if(!act)return;
+  const cost=(act==='flat'||act==='beach'||act==='mountains')?300:0,loanOk=act==='mountains'&&home==='beach'&&coins>=150,debt=store.get('debt',0);
+  if(cost&&debt>0&&act!=='gohome'){SFX.bad();roomSay(T('First we pay back the bank: {n} coins left.',{n:debt}));return}
+  if(coins<cost&&!loanOk){SFX.bad();roomSay(act==='flat'?"Moving costs 300 coins... let's play some more!":act==='mountains'&&home==='beach'?'We need at least 150 coins, the bank lends the rest.':"A trip costs 300 coins... let's play some more!");return}
+  if(chArm!==act){chArm=act;e.currentTarget.textContent=coins<cost?T('LOAN {n}? TAP AGAIN',{n:cost-coins}):T('SURE? TAP AGAIN');SFX.blip();setTimeout(()=>{if(chArm===act){chArm='';renderChapter()}},3000);return}
   chArm='';goPlace(act)}
+document.querySelectorAll('#roomTabs [data-room]').forEach(b=>b.addEventListener('click',()=>{if(!inFlat()||home===b.dataset.room)return;audio();SFX.blip();home=b.dataset.room;store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.meal=null;renderShop();drawRoom();roomSay(home==='bath'?'The bathroom!':'The living room!')}));
 $('chA').addEventListener('click',chapterClick);$('chB').addEventListener('click',chapterClick);
 /* love on holiday */
 function startLove(){if(!beach||beach.met)return;beach.met=true;store.set('beach',beach);RM.pixaX=132;RM.love=Date.now();}
 
-const FXS={heart:{p:['.#.#.','#####','#####','.###.','..#..'],c:'#ff6b8a'},note:{p:['..##','..#.','..#.','.##.','.##.'],c:'#ffd166'},z:{p:['####','..#.','.#..','####'],c:'#ffffff'},crumb:{p:['#'],c:'#f6cc8a'},bubble:{p:['.#.','#.#','.#.'],c:'#cfefff'}};
+const FXS={stink:{p:['.#.','#..','.#.','..#'],c:'#9be37a'},puff:{p:['.##.','####','.##.'],c:'#ffffff'},heart:{p:['.#.#.','#####','#####','.###.','..#..'],c:'#ff6b8a'},note:{p:['..##','..#.','..#.','.##.','.##.'],c:'#ffd166'},z:{p:['####','..#.','.#..','####'],c:'#ffffff'},crumb:{p:['#'],c:'#f6cc8a'},bubble:{p:['.#.','#.#','.#.'],c:'#cfefff'}};
 function drawFx(c,k,x,y){const F=FXS[k];[[1,1,OL],[0,0,F.c]].forEach(([dx,dy,col])=>F.p.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]==='#')dot(c,x+i+dx,y+j+dy,col)}))}
 function glow(c,x,y,r,col){const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(x-r,y-r,r*2,r*2)}
 function pixoLook(){
   const o={hat:isBirthday(),pal:tanPal()};
   if(home==='beach'){o.glasses=has('glasses');o.burn=inHours(H(),12,15)&&meals.sunscreen!==today();if(o.burn)o.pal={b:o.pal.b,l:'#ff9a8a',s:o.pal.s};o.sweat=inHours(H(),15,18)&&meals.icecream!==today();return o}
-  if(home!=='flat')return o;
+  if(home==='mount'){o.boots=has('boots');o.headlamp=has('headlamp');o.jacket=has('jacket')||!!mount.summit;o.binoculars=has('binoculars');if(isWetDay()&&!has('jacket')&&!mount.summit)o.shiver=true;return o}
+  if(inFlat()&&flat.dirty)o.dirty=true;
+  if(!inFlat())return o;
   if(isWinter()&&!(has('heater')&&RM.on.heater))o.shiver=true;
   if(isSummer()&&!(has('fan')&&RM.on.fan))o.sweat=true;
   if(isMondayMorning()&&meals.coffee!==today())o.tired=true;
   return o;
 }
 function drawRoom(){
-  const c=RB.getContext('2d'),f=RM.f,night=home==='beach'?beachPhase()==='night':isNight(),pl=P(),look=pixoLook();
+  const c=RB.getContext('2d'),f=RM.f,night=(home==='beach'||home==='mount')?beachPhase()==='night':isNight(),pl=P(),look=pixoLook();
   c.clearRect(0,0,128,112);c.drawImage(bgFor(night),0,0);
   if(home==='beach')drawBeachDyn(c,beachPhase(),f);
   if(home==='flat')drawFlatWindow(c,night,f);
+  if(home==='bath')drawBathExtras(c,f);
+  const summit=home==='mount'&&mount.summit;
   if(home==='room'&&has('lights'))DRAW.lights(c,2,1,f);
   const L=n=>pl.items.filter(it=>it.layer===n&&!it.food&&it.id!=='lights'&&has(it.id));
-  L(0).forEach(it=>DRAW[it.id](c,it.x,it.y,f));
-  L(1).forEach(it=>DRAW[it.id](c,it.x,it.y,f));
+  if(!summit){L(0).forEach(it=>DRAW[it.id](c,it.x,it.y,f));
+  L(1).forEach(it=>DRAW[it.id](c,it.x,it.y,f));}
   const J=[0,3,6,8,6,3,0],jy=RM.jump>0?J[RM.jump]:0,moving=RM.mode==='walk'||RM.mode==='toFood'||RM.mode==='eat';
   const bob=moving&&(f>>1)%2?1:0,jit=look.shiver?((f%2)?1:-1):0;
-  const pOpt={flip:RM.dir<0,blink:RM.mode==='sleep'||blinkNow()||(look.tired&&f%16<11),lift:jy+bob,hat:look.hat,sweat:look.sweat,glasses:look.glasses,burn:look.burn,pal:look.pal};
-  if(RM.mode!=='sit')drawPixo(c,Math.round(RM.px)+jit,pl.petY-jy-bob,stageIdx(),pOpt);
+  const pOpt={flip:RM.dir<0,blink:RM.mode==='sleep'||blinkNow()||(look.tired&&f%16<11),lift:jy+bob,hat:look.hat,sweat:look.sweat,glasses:look.glasses,burn:look.burn,pal:look.pal,dirty:look.dirty,jacket:look.jacket,boots:look.boots,headlamp:look.headlamp,binoculars:look.binoculars};
+  if(summit){DRAW.flag(c,70,14,f);drawPixo(c,52+jit,18-jy,stageIdx(),{...pOpt,lift:-jy})}
+  else if(RM.mode==='bath'){drawPixo(c,pl.seat.x,pl.seat.y,stageIdx(),{...pOpt,noShadow:true});c.save();c.beginPath();c.rect(0,70,128,42);c.clip();DRAW.tub(c,2,58,f);c.restore();if(has('duck'))DRAW.duck(c,40,52,f)}
+  else if(RM.mode!=='sit')drawPixo(c,Math.round(RM.px)+jit,pl.petY-jy-bob,stageIdx(),pOpt);
   if(home==='beach'&&beach&&beach.met&&RM.pixaX!=null)drawPixo(c,Math.round(RM.pixaX),pl.petY,Math.max(2,Math.min(3,stageIdx())),{pal:PIXA,flip:RM.pixaX>RM.px,blink:blinkNow(),flower:true});
   if(RM.meal)drawMeal(c,pl.plate.x,pl.plate.y,RM.meal.kind,RM.meal.p);
-  L(3).forEach(it=>DRAW[it.id](c,it.x,it.y,f));
+  if(!summit)L(3).forEach(it=>DRAW[it.id](c,it.x,it.y,f));
+  if(home==='mount')drawMountDyn(c,f,summit);
   if(RM.mode==='sit')drawPixo(c,pl.seat.x+jit,pl.seat.y,stageIdx(),{...pOpt,noShadow:true});
   RM.fx.forEach(e=>drawFx(c,e.k,Math.round(e.x),Math.round(e.y)));
   if(home==='beach'&&beachPhase()==='sunset'){c.fillStyle='rgba(255,130,80,.12)';c.fillRect(0,0,128,112);if(has('torches')){c.globalCompositeOperation='lighter';glow(c,49,56,16,'rgba(255,150,60,.3)');glow(c,125,56,16,'rgba(255,150,60,.3)');c.globalCompositeOperation='source-over'}}
   if(night){c.fillStyle='rgba(22,16,58,.42)';c.fillRect(0,0,128,112);c.globalCompositeOperation='lighter';
     const at=id=>pl.items.find(i=>i.id===id);
-    if(has('lamp')&&RM.on.lamp){const l=at('lamp');glow(c,l.x+6,l.y+16,34,'rgba(255,120,170,.35)')}
-    if(has('tv')&&RM.on.tv)glow(c,94,58,36,'rgba(140,190,255,.3)');
-    if(has('desk'))glow(c,80,50,26,'rgba(120,170,255,.22)');
-    if(has('heater')&&RM.on.heater)glow(c,121,100,22,'rgba(255,140,70,.3)');
-    if(has('aquarium'))glow(c,102,90,18,'rgba(110,200,255,.2)');
+    if(has('lamp')&&at('lamp')&&RM.on.lamp){const l=at('lamp');glow(c,l.x+6,l.y+16,34,'rgba(255,120,170,.35)')}
+    if(has('tv')&&at('tv')&&RM.on.tv)glow(c,94,58,36,'rgba(140,190,255,.3)');
+    if(has('desk')&&at('desk'))glow(c,80,50,26,'rgba(120,170,255,.22)');
+    if(has('heater')&&at('heater')&&RM.on.heater)glow(c,121,100,22,'rgba(255,140,70,.3)');
+    if(has('aquarium')&&at('aquarium'))glow(c,102,90,18,'rgba(110,200,255,.2)');
+    if(home==='mount'&&!summit&&has('campfire'))glow(c,108,98,30,'rgba(255,150,60,.45)');
+    if(home==='mount'&&has('headlamp')&&!summit)glow(c,RM.px+12,pl.petY+8,22,'rgba(255,230,150,.35)');
     if(home==='beach'&&has('torches')){glow(c,49,56,24,'rgba(255,150,60,.45)');glow(c,125,56,24,'rgba(255,150,60,.45)')}
     if(home==='room'&&has('lights')&&RM.on.lights)glow(c,64,4,60,'rgba(255,210,120,.14)');
     const w=pl.win;glow(c,(w[0]+w[2])/2,(w[1]+w[3])/2,24,'rgba(160,150,255,.14)');c.globalCompositeOperation='source-over'}
@@ -1131,12 +1312,16 @@ function tickRoom(){
     if(p<=0){RM.meal=null;RM.mode='walk';RM.jump=6;fx('heart',RM.px+9,pl.petY-8);SFX.grow();roomSay('Yum! That was tasty!')}}
   else if(RM.mode==='sleep'){if(now>RM.until){RM.mode='walk';roomSay('Good morning!')}else if(RM.f%7===0)fx('z',RM.px+17,pl.petY-2)}
   else if(RM.mode==='sit'){if(now>RM.until){RM.mode='walk';RM.px=pl.walk[0]}}
+  else if(RM.mode==='bath'){if(now>RM.until){RM.mode='walk';RM.px=pl.walk[0];roomSay('Squeaky clean!')}else if(RM.f%4===0)fx('bubble',pl.seat.x+4+Math.random()*16,pl.seat.y-2)}
   else if(RM.mode==='idle'){if(now>RM.until)RM.mode='walk'}
   else{RM.px+=RM.dir;if(RM.px<pl.walk[0])RM.dir=1;if(RM.px>pl.walk[1])RM.dir=-1;RM.px=Math.max(pl.walk[0]-1,Math.min(pl.walk[1]+1,RM.px));
     if(Math.random()<.02)RM.dir*=-1;if(Math.random()<.015){RM.mode='idle';RM.until=now+1500+Math.random()*2000}}
   if(now<RM.music&&RM.f%4===0){if(RM.tune===2)fx('note',30+Math.random()*16,20);else if(has('boombox'))fx('note',60+Math.random()*10,46)}
   if(home==='beach'&&beach&&beach.met){const tx=RM.px+28>100?RM.px-28:RM.px+28;if(RM.pixaX==null)RM.pixaX=tx;if(Math.abs(RM.pixaX-tx)>1)RM.pixaX+=(RM.pixaX<tx?1:-1)*(RM.love&&!RM.loveDone?3:1);
     if(RM.love){if(!RM.loveDone&&Math.abs(RM.pixaX-tx)<=2){RM.loveDone=true;SFX.secret();toast('PIXO FELL IN LOVE ♥');roomSay("Who is that...? I think I'm in love!")}if(RM.f%5===0&&now-RM.love<9000)fx('heart',(RM.px+RM.pixaX)/2+10,pl.petY-10)}}
+  if(inFlat()&&inHours(H(),21,23)&&meals.toothpaste!==today()&&RM.f%28===0&&RM.mode!=='bath')fx('stink',RM.px+18,pl.petY+12);
+  if(home==='mount'&&!mount.summit&&RM.f%22===0&&((coldMorning()&&meals.tea!==today())||(isWetDay()&&!has('jacket'))))fx('puff',RM.px+(RM.dir<0?-2:20),pl.petY+12);
+  if(RM.brush>now&&RM.f%5===0)fx('bubble',70+Math.random()*10,40);
   if(home==='flat'&&has('aquarium')){const sp=fishHungry()?.1:.4;RM.fishX+=RM.fishDir*sp;if(RM.fishX>14){RM.fishX=14;RM.fishDir=-1}if(RM.fishX<1){RM.fishX=1;RM.fishDir=1}}
   RM.fx.forEach(e=>{e.y-=e.k==='crumb'?-.4:.9;e.life--});RM.fx=RM.fx.filter(e=>e.life>0);
   drawRoom();
@@ -1164,6 +1349,13 @@ function interact(id){
     case 'hammock':RM.swing=now+3000;tone([330,392,330],.12,'triangle',.04);roomSay(it.say);break;
     case 'ball':RM.ball=now+1500;tone([600,400,600],.05);roomSay('Boing!');break;
     case 'lounger':if(RM.meal)return;RM.mode='sit';RM.until=now+5000;SFX.blip();roomSay('Pure relaxation...');break;
+    case 'tub':if(RM.meal)return;RM.mode='bath';RM.until=now+3500;tone([523,659,784],.08);roomSay('Splash!');break;
+    case 'washer':RM.wash=now+4000;tone([200,220,200,220],.1,'sawtooth',.02);if(flat.laundry){flat.laundry=false;store.set('flat',flat);roomSay('Washing the holiday clothes!')}else roomSay('Nothing to wash right now.');break;
+    case 'sink':RM.brush=now+2200;SFX.blip();roomSay('Looking good!');break;
+    case 'duck':tone([880,660],.06);roomSay('Quack!');break;
+    case 'campfire':tone([180,0,160],.08,'sawtooth',.02);roomSay('Cozy fire...');break;
+    case 'sleepbag':if(RM.meal)return;RM.mode='sleep';RM.until=now+5000;tone([392,330,262],.25,'triangle',.05);roomSay('Zzz... under the stars');break;
+    case 'tent':if(RM.meal)return;RM.mode='sit';RM.until=now+4000;SFX.blip();roomSay('Home sweet tent!');break;
     case 'sofa':if(RM.meal)return;RM.mode='sit';RM.until=now+5000;SFX.blip();roomSay('So comfy...');break;
     default:fx('heart',it.x+it.w/2-2,it.y-6);SFX.blip();roomSay(it.say||'');
   }
@@ -1175,13 +1367,15 @@ $('room').addEventListener('pointerdown',e=>{
   const hit=pl.items.filter(it=>!it.food&&has(it.id)).sort((a,b)=>b.layer-a.layer).find(it=>mx>=it.x&&mx<=it.x+it.w&&my>=it.y-1&&my<=it.y+it.h+1);
   if(hit){interact(hit.id);return}
   const w=pl.win;if(mx>=w[0]&&mx<=w[2]&&my>=w[1]&&my<=w[3]){SFX.blip();
-    roomSay(home==='beach'?(isLowTide()?'Low tide! Look at the shells!':beachPhase()==='sunset'?'What a sunset...':beachPhase()==='night'?'Moonlight on the sea...':'The sea is calm...'):home==='flat'?(isWetDay()?(isWinter()?'Snow is falling...':'Rainy day...'):isNight()?'City lights!':'Busy city out there!'):(isNight()?'Look, stars!':'Nice day outside!'))}
+    roomSay(home==='mount'?(mount.summit?'Clouds below my feet...':eagleTime()?'Something is circling up there...':isWetDay()?'Snow everywhere!':'What a view!'):home==='bath'?'Frosted glass... cozy.':home==='beach'?(isLowTide()?'Low tide! Look at the shells!':beachPhase()==='sunset'?'What a sunset...':beachPhase()==='night'?'Moonlight on the sea...':'The sea is calm...'):home==='flat'?(isWetDay()?(isWinter()?'Snow is falling...':'Rainy day...'):isNight()?'City lights!':'Busy city out there!'):(isNight()?'Look, stars!':'Nice day outside!'))}
 });
 function itemState(it){return !it.food&&has(it.id)?'owned':petLv()<(it.lv||1)?'locked':'open'}
 function shopItems(){return P().items.filter(it=>!it.carried)}
 function renderShop(){
   const pl=P();$('homeTitle').textContent=T(pl.title);$('coinsLbl').textContent=T('COINS')+' '+coins;
-  const rl=$('rentLbl');if(home==='flat'){const d=Math.ceil((flat.paidUntil-Date.now())/864e5);rl.hidden=false;rl.textContent=rentDue()?T('RENT DUE · 40 COINS · PLAY TO EARN'):T(d===1?'RENT PAID · {d} DAY LEFT':'RENT PAID · {d} DAYS LEFT',{d});rl.classList.toggle('due',rentDue())}else rl.hidden=true;
+  const rl=$('rentLbl'),debtN=store.get('debt',0);$('roomTabs').hidden=!inFlat();document.querySelectorAll('#roomTabs [data-room]').forEach(b=>b.classList.toggle('sel',b.dataset.room===home));
+  if(debtN>0){rl.hidden=false;rl.textContent=T(home==='mount'?'BANK LOAN · {n} COINS · REPAID BACK HOME':'BANK LOAN · {n} COINS LEFT · EARNINGS REPAY IT',{n:debtN});rl.classList.add('due')}
+  else if(inFlat()){const d=Math.ceil((flat.paidUntil-Date.now())/864e5);rl.hidden=false;rl.textContent=rentDue()?T('RENT DUE · 40 COINS · PLAY TO EARN'):T(d===1?'RENT PAID · {d} DAY LEFT':'RENT PAID · {d} DAYS LEFT',{d});rl.classList.toggle('due',rentDue())}else rl.hidden=true;
   renderChapter();
   $('shop').innerHTML=shopItems().map(it=>{const st=itemState(it);const lbl=st==='owned'?T('OWNED'):st==='locked'?'LV'+it.lv:it.price;
     return `<button type="button" class="shopcard ${st}${it.food?' food':''}${RM.sel===it.id?' sel':''}" data-id="${it.id}" aria-label="${T(it.name)}"><span class="ic"><canvas></canvas></span><span>${lbl}</span></button>`}).join('');
@@ -1194,20 +1388,26 @@ function renderShop(){
   const st=itemState(it),nm=T(it.name);
   if(st==='owned')$('shopInfo').textContent=nm+' · '+T('in your home. Tap it there!');
   else if(st==='locked')$('shopInfo').textContent=nm+' · '+T('Pixo must reach LV{n}',{n:it.lv});
+  else if(store.get('debt',0)>0&&home!=='mount')$('shopInfo').textContent=T('Pay back the bank first. Your earnings go to the loan.');
   else if(rentDue())$('shopInfo').textContent=T('Rent is due (40 coins). Play a game to earn coins.');
   else if(coins<it.price)$('shopInfo').textContent=nm+' · '+T('{p} coins (need {m} more)',{p:it.price,m:it.price-coins});
-  else{$('shopInfo').textContent=nm+' · '+T('{p} coins',{p:it.price})+(it.food==='pixo'?' · '+T('Pixo eats it right away'):it.food==='fish'?' · '+T('for the aquarium'):'');bb.hidden=false}
+  else{$('shopInfo').textContent=nm+' · '+T('{p} coins',{p:it.price})+(it.food==='pixo'?' · '+T('Pixo eats it right away'):it.food==='fish'?' · '+T('for the aquarium'):it.food==='bath'?' · '+T('for the bathtub'):'');bb.hidden=false}
 }
 $('shop').addEventListener('click',e=>{const b=e.target.closest('.shopcard');if(!b)return;RM.sel=b.dataset.id;SFX.blip();renderShop()});
-$('buyBtn').addEventListener('click',()=>{const it=itemOf(RM.sel),pl=P();if(!it||itemState(it)!=='open'||coins<it.price||rentDue()){SFX.bad();return}
+$('buyBtn').addEventListener('click',()=>{const it=itemOf(RM.sel),pl=P();if(!it||itemState(it)!=='open'||coins<it.price||rentDue()||(store.get('debt',0)>0&&home!=='mount')){SFX.bad();return}
   if(it.food==='pixo'&&RM.meal){SFX.bad();roomSay('Nom nom... still eating this one!');return}
   if(it.food==='fish'&&!has('aquarium')){SFX.bad();roomSay("We don't have any fish yet!");return}
+  if(it.food==='bath'&&!has('tub')){SFX.bad();roomSay('We need a bathtub first!');return}
   const need=activeNeeds().find(n=>n.id===it.id);
   coins-=it.price;store.set('coins',coins);
   if(it.food==='pixo'){RM.meal={kind:it.id,p:1,start:0};RM.mode='toFood';roomSay(it.id==='cake'?'A cake?! For me?!':'Food! For me?!')}
+  else if(it.food==='brush'){meals.toothpaste=today();store.set('meals',meals);RM.brush=Date.now()+3000;roomSay('Fresh breath!')}
+  else if(it.food==='bath'){flat.dirty=false;store.set('flat',flat);RM.mode='bath';RM.until=Date.now()+5000;RM.bath=Date.now()+5000;tone([523,659,784],.08);roomSay('Splish splash!')}
   else if(it.food==='apply'){meals.sunscreen=today();store.set('meals',meals);for(let i=0;i<4;i++)fx('heart',RM.px+2+i*5,pl.petY-6);roomSay('Ahh, protected!')}
   else if(it.food==='fish'){flat.fishFedAt=Date.now();store.set('flat',flat);const a=itemOf('aquarium');for(let i=0;i<3;i++)fx('crumb',a.x+6+i*4,a.y+1);roomSay('The fish is munching!')}
   else{addOwned(it.id);if(it.id==='aquarium'){flat.fishFedAt=Date.now();store.set('flat',flat)}RM.jump=6;fx('heart',RM.px+9,pl.petY-8);roomSay(['I love it!','Wow, thank you!','Best home ever!'][Math.floor(Math.random()*3)]);
+    if(it.id==='washer'&&flat.laundry){flat.laundry=false;store.set('flat',flat);RM.wash=Date.now()+4000}
+    if(home==='mount'&&placeComplete()&&!mount.summit)setTimeout(startSummit,need?1800:900);
     if(home==='beach'){updateTan();if(placeComplete()&&!beach.met)setTimeout(()=>{startLove();RM.mode='idle';RM.until=Date.now()+5000},need?1800:900)}}
   SFX.grow();
   if(need){if(it.food==='pixo'){meals[it.id]=today();store.set('meals',meals)}const r=need.reward||1;addBonusRot(r);
@@ -1216,10 +1416,10 @@ $('buyBtn').addEventListener('click',()=>{const it=itemOf(RM.sel),pl=P();if(!it|
 function sizeRoom(){if(S.state==='home'){drawRoom();renderShop()}}
 window.addEventListener('resize',sizeRoom);
 function openHome(){
-  audio();RM.prev=S.state;S.state='home';RM.sel=null;RM.px=P().walk[0]+10;RM.mode='walk';
+  audio();RM.prev=S.state;S.state='home';RM.sel=null;RM.px=P().walk[0]+10;RM.mode='walk';RM.summitAt=0;
   payRent();
   const hint=takeHint();
-  roomSay(welcome?T('I saved {n} coins for you!',{n:coins}):hint?hint:rentDue()?'Rent is due... we need 40 coins.':placeComplete()?{room:"My room is perfect... what's next?",flat:'My flat is perfect... maybe a trip?',beach:"Best holiday ever... what's next?"}[home]:home==='beach'?(ownedList().length?'Back to the beach!':"The beach! Let's get some gear!"):ownedList().length?'Welcome home!':'My room is empty... buy me something?');welcome=false;
+  roomSay(welcome?T('I saved {n} coins for you!',{n:coins}):hint?hint:rentDue()?'Rent is due... we need 40 coins.':placeComplete()?{room:"My room is perfect... what's next?",flat:'My flat is perfect... maybe a trip?',bath:'My flat is perfect... maybe a trip?',beach:"Best holiday ever... what's next?",mount:"Honestly... it's not as fun as it looks on social media."}[home]:home==='mount'?(ownedList().length?'Back on the trail!':"The mountains! I need some gear!"):home==='bath'&&!ownedList().some(id=>BATH_ITEMS.some(b=>b.id===id))?"An empty bathroom... let's fix it up!":home==='beach'?(ownedList().length?'Back to the beach!':"The beach! Let's get some gear!"):ownedList().length?'Welcome home!':'My room is empty... buy me something?');welcome=false;
   render();renderShop();drawRoom();clearInterval(RM.timer);RM.timer=setInterval(tickRoom,110);SFX.blip();
 }
 function closeHome(){clearInterval(RM.timer);RM.timer=null;if(RM.meal){RM.meal=null}RM.mode='walk';S.state=RM.prev==='home'?'title':RM.prev;SFX.blip();render()}
@@ -1247,7 +1447,7 @@ $('fbForm').addEventListener('submit',async e=>{
   if(!fb.fun){$('fbNote').textContent=T('Tap the hearts to rate the fun.');SFX.bad();return}
   if(text.length<10&&!fb.tags.size){$('fbNote').textContent=T('Pick a topic or write a few words.');SFX.bad();return}
   $('fbSend').disabled=true;$('fbNote').textContent=T('Sending...');
-  const entry={at:new Date().toISOString(),fun:fb.fun,tags:[...fb.tags],text,best:scores[0]?scores[0].s:0,lastScore:S.score||0,petStage:STAGES[stageIdx()].name,lines:lifetime,lang:LANG||'en',device:navigator.language||'',ver:'0.9'};
+  const entry={at:new Date().toISOString(),fun:fb.fun,tags:[...fb.tags],text,best:scores[0]?scores[0].s:0,lastScore:S.score||0,petStage:STAGES[stageIdx()].name,lines:lifetime,lang:LANG||'en',device:navigator.language||'',ver:'1.0'};
   let sent=false;const cap=await capDb();
   if(cap){try{const ref=cap.db.doc('feedback/'+cap.id);const snap=await ref.get();const prev=snap.exists&&Array.isArray((snap.data()||{}).items)?snap.data().items:[];await ref.set({lastAt:entry.at,lang:LANG||'en',count:prev.length+1,items:[...prev,entry].slice(-20)});sent=true}catch(err){sent=false}}
   if(!sent){const q=store.get('fbQueue',[]);q.push(entry);store.set('fbQueue',q.slice(-20))}
@@ -1257,6 +1457,15 @@ $('fbForm').addEventListener('submit',async e=>{
   toast(rewarded?'THANKS! +1 ↻ NEXT GAME':'THANKS!');
   if(!sent) setTimeout(()=>toast('SAVED ON THIS DEVICE'),900);
 });
+
+/* ---------- world top 10 (Claude version; public build falls back to local scores) ---------- */
+let LB=null,myRank=null;
+const myName=()=>store.get('myName','PIXO');
+async function lbLoad(){const cap=await capDb();if(!cap)return;try{const q=await cap.db.collection('scores').orderBy('s','desc').limit(10).get();
+  LB=q.docs.map(d=>({id:d.id,...d.data()}));LB.me=cap.id;const best=store.get('best',0);myRank=null;
+  if(best>0&&!LB.some(r=>r.id===cap.id)){const above=await cap.db.collection('scores').where('s','>',best).limit(1000).get();myRank=above.docs.length+1}
+  if(S.state==='title'||S.state==='over')render()}catch(e){}}
+async function lbSubmit(n,s){const cap=await capDb();if(!cap)return;try{await cap.db.doc('scores/'+cap.id).set({n,s,lang:LANG||'en',at:new Date().toISOString()});lbLoad()}catch(e){}}
 
 /* ---------- language picker ---------- */
 let langPrev='title',ownerHR=false;
@@ -1270,7 +1479,7 @@ if(I18N.hr){(async()=>{try{const u=window.claude&&window.claude.use?await window
 
 /* ---------- boot (keeps a running game across page updates) ---------- */
 window.claude?.hot?.snapshot?.(()=>({S}));
-function start(data){if(data&&data.S&&data.S.grid){S=data.S;if(S.state==='play'||S.state==='ad')S.state='pause';if(S.state==='fb'||S.state==='home'||S.state==='lang')S.state='title';if(S.rot==null){S.rot=2;S.adUsed=false}}applyLang();if(!LANG)S.state='lang',renderLangs();else recordLang();say(idleLine());render()}
+function start(data){if(data&&data.S&&data.S.grid){S=data.S;if(S.state==='play'||S.state==='ad')S.state='pause';if(S.state==='fb'||S.state==='home'||S.state==='lang')S.state='title';if(S.rot==null){S.rot=2;S.adUsed=false}}applyLang();if(!LANG)S.state='lang',renderLangs();else recordLang();lbLoad();say(idleLine());render()}
 window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
 })();
 </script>
