@@ -4,4 +4,6 @@
     <string name="title_activity_main">Pocket Blox</string>
     <string name="package_name">com.pocketblox.game</string>
     <string name="custom_url_scheme">com.pocketblox.game</string>
+    <!-- Google test app ID; replace with the real AdMob app ID before release -->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
 </resources>
