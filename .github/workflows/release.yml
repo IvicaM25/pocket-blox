@@ -1,8 +1,10 @@
 name: Android release bundle
 # Builds the Play Store bundle (real ads). It is signed afterwards, outside GitHub, with the private upload key.
+# Start it by changing release.txt (one line: the Play versionCode).
 on:
   push:
-    tags: ['release-*']
+    branches: [main]
+    paths: ['release.txt']
 permissions:
   contents: write
 jobs:
@@ -19,6 +21,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      - name: Read version code
+        run: echo "VC=$(tr -dc 0-9 < release.txt)" >> $GITHUB_ENV
       - name: Build web game with real ads
         run: python3 build.py release && grep -q "testing:false/\*TESTING\*/" app/www/index.html
       - name: Sync Capacitor
@@ -26,10 +30,10 @@ jobs:
         run: npm ci && npx cap sync android
       - name: Build release bundle (unsigned)
         working-directory: app/android
-        run: chmod +x gradlew && ./gradlew bundleRelease --no-daemon
+        run: sed -i "s/versionCode [0-9]*/versionCode ${VC}/" app/build.gradle && chmod +x gradlew && ./gradlew bundleRelease --no-daemon
       - name: Publish unsigned bundle
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/android/app/build/outputs/bundle/release/app-release.aab PocketBlox-unsigned.aab
-          gh release create "${GITHUB_REF_NAME}" --prerelease --title "Play bundle ${GITHUB_REF_NAME}" --notes "Unsigned Play Store bundle. Not installable; signed separately before upload." PocketBlox-unsigned.aab
+          gh release create "release-${VC}" --prerelease --title "Play bundle ${VC}" --notes "Unsigned Play Store bundle. Not installable; signed separately before upload." PocketBlox-unsigned.aab
