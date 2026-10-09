@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Pocket Blox</string>
+    <string name="title_activity_main">Pocket Blox</string>
+    <string name="package_name">com.pocketblox.game</string>
+    <string name="custom_url_scheme">com.pocketblox.game</string>
+</resources>

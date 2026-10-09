@@ -31,6 +31,11 @@ tail='''
 </html>
 '''
 open('index.html','w').write(head+s+tail)
+# Android/iOS app shell (Capacitor): same game, no service worker, files bundled in the app.
+import os,shutil
+os.makedirs('app/www',exist_ok=True)
+open('app/www/index.html','w').write(head.replace('<link rel="manifest" href="manifest.webmanifest">\n','')+s+'\n</body>\n</html>\n')
+for f in ('icon-192.png','icon-512.png','apple-touch-icon.png'):shutil.copy(f,'app/www/'+f)
 sw=open('sw.js').read()
 sw=re.sub(r"const VERSION='[^']*';",f"const VERSION='pocket-blox-v{ver}';",sw)
 open('sw.js','w').write(sw)

@@ -1,0 +1,16 @@
+{
+  "name": "pocket-blox-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Android/iOS shell for Pocket Blox",
+  "scripts": {
+    "sync": "cap sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.3"
+  }
+}

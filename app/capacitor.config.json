@@ -1,0 +1,8 @@
+{
+  "appId": "com.pocketblox.game",
+  "appName": "Pocket Blox",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#1e2124"
+  }
+}
