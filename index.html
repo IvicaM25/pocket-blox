@@ -119,6 +119,7 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
 .lbtn:disabled{opacity:.4;cursor:default}
 .langs{display:flex;flex-direction:column;gap:10px;width:100%;max-width:240px}
 .langs .lbtn{font-size:14px;padding:10px 12px;text-align:left}
+.privrow{display:flex;flex-direction:column;gap:6px;width:100%;max-width:240px;margin-top:14px}.privrow .lbtn{font-size:10px;padding:7px 10px;opacity:.8}
 .langs .lbtn.sel{border-color:var(--accent);color:var(--accent);background:rgba(255,207,90,.08)}
 .langbtn{font-size:10px;border-width:1px;opacity:.85}
 .shop{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;width:100%}
@@ -221,6 +222,7 @@ body{background:var(--desk);color:var(--label);font-family:var(--f-num);display:
       <div class="overlay" id="ovLang" hidden>
         <h2 data-t="CHOOSE LANGUAGE">CHOOSE LANGUAGE</h2>
         <div class="langs" id="langs"></div>
+        <div class="privrow"><button type="button" class="lbtn" id="privAds" hidden data-t="AD SETTINGS">AD SETTINGS</button><button type="button" class="lbtn" id="privPol" data-t="PRIVACY POLICY">PRIVACY POLICY</button></div>
       </div>
       <div class="overlay home" id="ovHome" hidden>
         <div class="homehead"><span id="homeTitle">PIXO'S ROOM</span><span><button type="button" class="mood pmood" id="pmoodLbl" aria-label="Pixa" hidden>✿♥♥♡</button> <button type="button" class="mood" id="moodLbl" aria-label="Mood">♥♥♡</button> <span id="coinsLbl">COINS 0</span></span></div>
@@ -396,7 +398,7 @@ es:{
 'BUY':'COMPRAR','BACK':'VOLVER','SEND':'ENVIAR','FEEDBACK':'OPINIÓN','HOW FUN IS IT?':'¿CUÁNTO TE DIVIERTE?','WHAT SHOULD WE IMPROVE?':'¿QUÉ MEJORAMOS?',
 'Write in your own language, any language is welcome!':'Escribe en tu propio idioma, ¡cualquier idioma vale!',
 'Watch a short video<br>to get 1 rotate.':'Mira un vídeo corto<br>y gana 1 giro.','▶ WATCH (5s)':'▶ VER (5s)','NO THANKS':'NO, GRACIAS','VIDEO':'VÍDEO','(placeholder for a real ad)':'(aquí irá un anuncio real)',
-'PAUSE':'PAUSA','GAME OVER':'FIN DEL JUEGO','NEW HIGH SCORE!<br>ENTER YOUR NAME':'¡NUEVO RÉCORD!<br>ESCRIBE TU NOMBRE','OK':'OK','CHOOSE LANGUAGE':'ELIGE IDIOMA','🌐 LANGUAGE':'🌐 IDIOMA',
+'PAUSE':'PAUSA','GAME OVER':'FIN DEL JUEGO','NEW HIGH SCORE!<br>ENTER YOUR NAME':'¡NUEVO RÉCORD!<br>ESCRIBE TU NOMBRE','OK':'OK','CHOOSE LANGUAGE':'ELIGE IDIOMA','🌐 LANGUAGE':'🌐 IDIOMA',"AD SETTINGS":"AJUSTES DE ANUNCIOS","PRIVACY POLICY":"PRIVACIDAD","NOT AVAILABLE":"NO DISPONIBLE",
 'TAP A BLOCK TO TURN':'TOCA UNA PIEZA PARA GIRAR','NEED A TURN? TAP ↻':'¿UN GIRO? TOCA ↻','DRAG A BLOCK':'ARRASTRA UNA PIEZA','COMBO':'COMBO',
 "⌂ PIXO'S HOME":'⌂ CASA DE PIXO','COINS':'MONEDAS','SOUND ON':'SONIDO SÍ','SOUND OFF':'SONIDO NO','BONUS +{n} ↻':'BONUS +{n} ↻',
 "Let's go!":'¡Vamos!','{n} LINES! +{g}':'¡{n} LÍNEAS! +{g}','I hatched!!':'¡¡He nacido!!','I grew up!':'¡He crecido!','NEW ROOM ITEMS!':'¡COSAS NUEVAS!',
@@ -444,7 +446,7 @@ de:{
 'BUY':'KAUFEN','BACK':'ZURÜCK','SEND':'SENDEN','FEEDBACK':'FEEDBACK','HOW FUN IS IT?':'WIE VIEL SPASS MACHT ES?','WHAT SHOULD WE IMPROVE?':'WAS SOLLEN WIR VERBESSERN?',
 'Write in your own language, any language is welcome!':'Schreib in deiner eigenen Sprache, jede Sprache ist willkommen!',
 'Watch a short video<br>to get 1 rotate.':'Schau ein kurzes Video<br>für 1 Drehung.','▶ WATCH (5s)':'▶ ANSEHEN (5s)','NO THANKS':'NEIN, DANKE','VIDEO':'VIDEO','(placeholder for a real ad)':'(hier kommt echte Werbung hin)',
-'PAUSE':'PAUSE','GAME OVER':'SPIEL VORBEI','NEW HIGH SCORE!<br>ENTER YOUR NAME':'NEUER REKORD!<br>GIB DEINEN NAMEN EIN','OK':'OK','CHOOSE LANGUAGE':'SPRACHE WÄHLEN','🌐 LANGUAGE':'🌐 SPRACHE',
+'PAUSE':'PAUSE','GAME OVER':'SPIEL VORBEI','NEW HIGH SCORE!<br>ENTER YOUR NAME':'NEUER REKORD!<br>GIB DEINEN NAMEN EIN','OK':'OK','CHOOSE LANGUAGE':'SPRACHE WÄHLEN','🌐 LANGUAGE':'🌐 SPRACHE',"AD SETTINGS":"WERBE-EINSTELLUNGEN","PRIVACY POLICY":"DATENSCHUTZ","NOT AVAILABLE":"NICHT VERFÜGBAR",
 'TAP A BLOCK TO TURN':'TIPP EINEN BLOCK ZUM DREHEN','NEED A TURN? TAP ↻':'DREHEN? TIPP ↻','DRAG A BLOCK':'ZIEH EINEN BLOCK','COMBO':'KOMBO',
 "⌂ PIXO'S HOME":'⌂ PIXOS ZUHAUSE','COINS':'MÜNZEN','SOUND ON':'TON AN','SOUND OFF':'TON AUS','BONUS +{n} ↻':'BONUS +{n} ↻',
 "Let's go!":'Los geht’s!','{n} LINES! +{g}':'{n} LINIEN! +{g}','I hatched!!':'Ich bin geschlüpft!!','I grew up!':'Ich bin gewachsen!','NEW ROOM ITEMS!':'NEUE SACHEN!',
@@ -625,11 +627,16 @@ const AdM=()=>NATIVE&&window.Capacitor.Plugins&&window.Capacitor.Plugins.AdMob;
 async function adsPrepare(){const A=AdM();if(!A)return;try{await A.prepareRewardVideoAd({adId:ADS.unit,isTesting:ADS.testing});ADS.loaded=true}catch(e){ADS.loaded=false}}
 async function adsInit(){const A=AdM();if(!A)return;try{await A.initialize({initializeForTesting:ADS.testing});
   A.addListener('onRewardedVideoAdReward',()=>{ADS.got=true});const done=()=>{ADS.dismissed=true;if(ADS.onDismiss)ADS.onDismiss()};A.addListener('onRewardedVideoAdDismissed',done);A.addListener('onRewardedVideoAdFailedToShow',done);
-  try{const ci=await A.requestConsentInfo();if(ci.status==='REQUIRED'&&ci.isConsentFormAvailable)await A.showConsentForm()}catch(e){}
+  try{let ci=await A.requestConsentInfo();if(ci.status==='REQUIRED'&&ci.isConsentFormAvailable)ci=await A.showConsentForm()||ci;privShow(ci)}catch(e){}
   adsPrepare()}catch(e){}}
 async function adsShow(){const A=AdM();if(!A)return 'error';try{if(!ADS.loaded)await adsPrepare();ADS.got=false;ADS.dismissed=false;await A.showRewardVideoAd();
   if(!ADS.dismissed)await new Promise(res=>{ADS.onDismiss=res;setTimeout(res,90000)});ADS.onDismiss=null;ADS.loaded=false;setTimeout(adsPrepare,800);return ADS.got?'reward':'skip'}catch(e){ADS.loaded=false;setTimeout(adsPrepare,3000);return 'error'}}
 if(NATIVE)setTimeout(adsInit,1200);
+/* privacy: policy link everywhere, ad-consent form (EU) inside the app */
+const PRIV_URL='https://ivicam25.github.io/pocket-blox/privacy.html';
+function privShow(ci){$('privAds').hidden=!(NATIVE&&ci&&ci.privacyOptionsRequirementStatus==='REQUIRED')}
+$('privAds').addEventListener('click',async()=>{audio();SFX.blip();const A=AdM();if(!A)return;try{await A.showPrivacyOptionsForm();adsPrepare()}catch(e){toast(T('NOT AVAILABLE'))}});
+$('privPol').addEventListener('click',()=>{audio();SFX.blip();const l=['es','de'].includes(LANG)?LANG:'en';window.open(PRIV_URL+'#'+l,'_blank')});
 function adReward(){S.ads=(S.ads||0)+1;S.rot=1;S.state='play';rotMode=true;SFX.grow();render();toast('+1 ROTATE');say('Thanks! Turn it!','happy')}
 $('adYes').addEventListener('click',()=>{
   if(NATIVE){$('adOffer').hidden=true;$('adPlay').hidden=false;$('adCount').textContent='…';$('adBar').style.width='100%';adsShow().then(r=>{if(r==='skip'){S.state='play';render();toast('NO REWARD');if(adFromStuck)gameOver()}else adReward()});return}
