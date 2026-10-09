@@ -1,4 +1,4 @@
-package com.pocketblox.game;
+package com.pixelpocket.pocketblox;
 
 import com.getcapacitor.BridgeActivity;
 
