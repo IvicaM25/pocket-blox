@@ -1,6 +1,7 @@
 """Builds the installable web game (index.html) from game.html.
 game.html is the source; it is also what runs inside Claude.
-Run: python3 build.py 0.6   (the version goes into the offline cache name)"""
+Run: python3 build.py 0.6   (the version goes into the offline cache name)
+     python3 build.py release  (Play Store build: real ads instead of test ads)"""
 import sys,re
 ver=sys.argv[1] if len(sys.argv)>1 else 'dev'
 s=open('game.html').read().replace('<title>Pocket Blox</title>\n','',1)
@@ -34,7 +35,10 @@ open('index.html','w').write(head+s+tail)
 # Android/iOS app shell (Capacitor): same game, no service worker, files bundled in the app.
 import os,shutil
 os.makedirs('app/www',exist_ok=True)
-open('app/www/index.html','w').write(head.replace('<link rel="manifest" href="manifest.webmanifest">\n','')+s+'\n</body>\n</html>\n')
+# Test builds show Google test ads; only `python3 build.py release` switches the app to real ads.
+app=s.replace('testing:true/*TESTING*/','testing:false/*TESTING*/') if ver=='release' else s
+assert 'testing:true/*TESTING*/' in s
+open('app/www/index.html','w').write(head.replace('<link rel="manifest" href="manifest.webmanifest">\n','')+app+'\n</body>\n</html>\n')
 for f in ('icon-192.png','icon-512.png','apple-touch-icon.png'):shutil.copy(f,'app/www/'+f)
 sw=open('sw.js').read()
 sw=re.sub(r"const VERSION='[^']*';",f"const VERSION='pocket-blox-v{ver}';",sw)

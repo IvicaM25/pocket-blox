@@ -620,9 +620,9 @@ function checkStuck(){
 }
 function openAd(stuck){adFromStuck=stuck;rotMode=false;S.state='ad';$('adTitle').textContent=T(stuck?'STUCK!':'OUT OF ROTATES');$('adOffer').hidden=false;$('adPlay').hidden=true;$('adLeft').textContent=T('VIDEO {n} OF {m} THIS GAME',{n:(S.ads||0)+1,m:AD_MAX});SFX.blip();render()}
 $('adNo').addEventListener('click',()=>{SFX.blip();S.state='play';if(adFromStuck){render();gameOver()}else render()});
-/* ---------- real rewarded video ads inside the Android/iOS app (Google test ads until the AdMob account exists) ---------- */
+/* ---------- real rewarded video ads inside the Android/iOS app (test builds show Google test ads; build.py release turns real ads on) ---------- */
 const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
-const ADS={unit:'ca-app-pub-3940256099942544/5224354917',testing:true,loaded:false,got:false,dismissed:false,onDismiss:null};
+const ADS={unit:'ca-app-pub-9197069225877762/2510022888',testing:true/*TESTING*/,loaded:false,got:false,dismissed:false,onDismiss:null};
 const AdM=()=>NATIVE&&window.Capacitor.Plugins&&window.Capacitor.Plugins.AdMob;
 async function adsPrepare(){const A=AdM();if(!A)return;try{await A.prepareRewardVideoAd({adId:ADS.unit,isTesting:ADS.testing});ADS.loaded=true}catch(e){ADS.loaded=false}}
 async function adsInit(){const A=AdM();if(!A)return;try{await A.initialize({initializeForTesting:ADS.testing});

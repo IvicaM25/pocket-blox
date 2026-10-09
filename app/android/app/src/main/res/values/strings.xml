@@ -5,5 +5,5 @@
     <string name="package_name">com.pixelpocket.pocketblox</string>
     <string name="custom_url_scheme">com.pixelpocket.pocketblox</string>
     <!-- Google test app ID; replace with the real AdMob app ID before release -->
-    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_app_id">ca-app-pub-9197069225877762~6449267898</string>
 </resources>
