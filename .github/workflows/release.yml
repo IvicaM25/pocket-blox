@@ -1,0 +1,35 @@
+name: Android release bundle
+# Builds the Play Store bundle (real ads). It is signed afterwards, outside GitHub, with the private upload key.
+on:
+  push:
+    tags: ['release-*']
+permissions:
+  contents: write
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build web game with real ads
+        run: python3 build.py release && grep -q "testing:false/\*TESTING\*/" app/www/index.html
+      - name: Sync Capacitor
+        working-directory: app
+        run: npm ci && npx cap sync android
+      - name: Build release bundle (unsigned)
+        working-directory: app/android
+        run: chmod +x gradlew && ./gradlew bundleRelease --no-daemon
+      - name: Publish unsigned bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/android/app/build/outputs/bundle/release/app-release.aab PocketBlox-unsigned.aab
+          gh release create "${GITHUB_REF_NAME}" --prerelease --title "Play bundle ${GITHUB_REF_NAME}" --notes "Unsigned Play Store bundle. Not installable; signed separately before upload." PocketBlox-unsigned.aab
