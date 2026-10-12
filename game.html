@@ -737,13 +737,10 @@ const ROOM_ITEMS=[
 const FLAT_ITEMS=[
  {id:'poster',name:'ROCKET POSTER',x:8,y:8,w:20,h:26,layer:0,carried:true,say:'It made the trip!'},
  {id:'clock',name:'WALL CLOCK',x:32,y:5,w:18,h:18,layer:0,carried:true},
- {id:'bed',name:'BED',x:2,y:42,w:47,h:43,layer:0,carried:true},
- {id:'lamp',name:'LAVA LAMP',x:50,y:38,w:12,h:36,layer:0,carried:true},
+ {id:'lamp',name:'LAVA LAMP',x:42,y:38,w:12,h:36,layer:0,carried:true},
  {id:'record',name:'RECORD PLAYER',price:180,lv:1,x:26,y:26,w:26,h:14,layer:0},
- {id:'desk',name:'DESK + COMPUTER',price:285,lv:1,x:64,y:44,w:32,h:29,layer:0},
- {id:'fridge',name:'FRIDGE',price:235,lv:1,x:98,y:28,w:16,h:46,layer:0},
- {id:'coffee',name:'COFFEE MACHINE',price:115,lv:1,x:100,y:16,w:12,h:12,layer:0},
- {id:'fan',name:'FAN',price:105,lv:1,x:115,y:40,w:13,h:34,layer:0},
+ {id:'desk',name:'DESK + COMPUTER',price:285,lv:1,x:6,y:44,w:32,h:29,layer:0},
+ {id:'fan',name:'FAN',price:105,lv:1,x:100,y:40,w:13,h:34,layer:0},
  {id:'sofa',name:'SOFA',price:195,lv:1,x:2,y:86,w:36,h:25,layer:3},
  {id:'umbrella',name:'UMBRELLA',price:40,lv:1,x:39,y:86,w:9,h:25,layer:3,say:'Ready for any weather!'},
  {id:'aquarium',name:'AQUARIUM',price:210,lv:1,x:90,y:82,w:24,h:28,layer:3},
@@ -1254,6 +1251,8 @@ const KITCHEN_ITEMS=[
  {id:'radio',name:'KITCHEN RADIO',price:70,lv:1,x:98,y:14,w:22,h:16,layer:0},
  {id:'table',name:'TABLE + CHAIR',price:210,lv:1,x:76,y:72,w:46,h:32,layer:1},
  {id:'bin',name:'TRASH BIN',price:25,lv:1,x:2,y:94,w:13,h:16,layer:3,say:'A tidy kitchen!'},
+ {id:'fridge',name:'FRIDGE',price:235,lv:1,x:66,y:48,w:16,h:46,layer:0},
+ {id:'coffee',name:'COFFEE MACHINE',price:115,lv:1,x:68,y:36,w:12,h:12,layer:0},
  {id:'dinner',name:'SPAGHETTI DINNER',price:12,lv:1,w:19,h:11,food:'pixo'},
  {id:'pancakes',name:'PANCAKES',price:9,lv:1,w:19,h:11,food:'pixo'}
 ];
@@ -1269,9 +1268,10 @@ const tummyRumble=()=>(isDinnerTime()&&meals[inHouse()?'lasagna':'dinner']!==tod
 const KLILAC={b:'#b9a2e0',l:'#d6c6f2',s:'#8f74c4'};
 const BEDROOM_ITEMS=[
  {id:'curtains',name:'CURTAINS',price:50,lv:1,x:12,y:3,w:40,h:33,layer:0},
+ {id:'bed',name:'BED',x:2,y:49,w:47,h:43,layer:0,carried:true,gone:()=>has('bigbed')},
  {id:'books',name:'BOOKSHELF',price:115,lv:1,x:60,y:16,w:30,h:26,layer:0,say:'Once upon a time...'},
  {id:'bigbed',name:'DOUBLE BED',price:285,lv:1,x:2,y:46,w:58,h:46,layer:0},
- {id:'teddy',name:'TEDDY BEAR',price:35,lv:1,x:44,y:55,w:13,h:14,layer:0,say:'My old buddy!'},
+ {id:'teddy',name:'TEDDY BEAR',price:35,lv:1,x:26,y:55,w:13,h:14,layer:0,say:'My old buddy!'},
  {id:'nightstand',name:'NIGHTSTAND',price:65,lv:1,x:62,y:70,w:17,h:24,layer:0,say:'A place for my stuff.'},
  {id:'alarm',name:'ALARM CLOCK',price:40,lv:1,x:64,y:60,w:12,h:11,layer:0},
  {id:'wardrobe',name:'WARDROBE',price:210,lv:1,x:96,y:22,w:30,h:72,layer:0},
@@ -2350,7 +2350,7 @@ function drawRoom(){
   if((home==='kitchen'||home==='hkitchen')&&tummyRumble()&&!RM.meal&&f%40<20)drawFx(c,'rumble',RM.px+20,P().petY+6);
   const summit=home==='mount'&&mount.summit;
   if(home==='room'&&has('lights'))DRAW.lights(c,2,1,f);
-  const L=n=>pl.items.filter(it=>it.layer===n&&!it.food&&it.id!=='lights'&&has(it.id));
+  const L=n=>pl.items.filter(it=>it.layer===n&&!it.food&&it.id!=='lights'&&has(it.id)&&!(it.gone&&it.gone()));
   if(!summit){L(0).forEach(it=>{if(!((it.id==='shower'||it.id==='oshower')&&RM.mode==='shower'))DRAW[it.id](c,it.x,it.y,f)});
   L(1).forEach(it=>DRAW[it.id](c,it.x,it.y,f));}
   if(home==='reef')drawReefDyn(c,f);
@@ -2388,7 +2388,7 @@ function drawRoom(){
     const at=id=>pl.items.find(i=>i.id===id);
     if(has('lamp')&&at('lamp')&&RM.on.lamp){const l=at('lamp');glow(c,l.x+6,l.y+16,34,'rgba(255,120,170,.35)')}
     if(has('tv')&&at('tv')&&RM.on.tv)glow(c,94,58,36,'rgba(140,190,255,.3)');
-    if(has('desk')&&at('desk'))glow(c,80,50,26,'rgba(120,170,255,.22)');
+    if(has('desk')&&at('desk')){const d=at('desk');glow(c,d.x+16,d.y+6,26,'rgba(120,170,255,.22)')}
     if(has('heater')&&at('heater')&&RM.on.heater)glow(c,121,100,22,'rgba(255,140,70,.3)');
     if(has('aquarium')&&at('aquarium')){const a=at('aquarium');glow(c,a.x+12,a.y+8,18,'rgba(110,200,255,.2)')}
     if(has('fireplace')&&at('fireplace')&&RM.on.fire!==false&&woodOk())glow(c,64,84,36,'rgba(255,140,60,.42)');
@@ -2573,7 +2573,7 @@ $('room').addEventListener('pointerdown',e=>{
   if(home==='nursery'&&house&&house.jrAt&&!aged()){const js=jrStage(),cr=has('cradle'),jx=js===0?(cr?12:56):(RM.jrX||60),jy=js===0?(cr?52:84):pl.petY;if(mx>=jx&&mx<=jx+24&&my>=jy&&my<=jy+24){fx('heart',jx+9,jy-8);tone([1175,1568],.06);roomSay(js===0?'Goo goo! ♥':js===1?'Hi Dad! Play with me!':js===2?'Dad, you are so embarrassing...':'Love you, Dad!');return}}
   if(pixaHere()&&RM.pixaX!=null&&mx>=RM.pixaX&&mx<=RM.pixaX+24&&my>=pl.petY-2&&my<=pl.petY+24){fx('heart',RM.pixaX+9,pl.petY-8);tone([988,1319],.06);carePixa('pet');roomSay('Hi there, cutie! ♥');return}
   if(RM.mode!=='sit'&&mx>=RM.px&&mx<=RM.px+24&&my>=pl.petY-2&&my<=pl.petY+24){petPixo();return}
-  const hit=pl.items.filter(it=>!it.food&&has(it.id)).sort((a,b)=>b.layer-a.layer).find(it=>mx>=it.x&&mx<=it.x+it.w&&my>=it.y-1&&my<=it.y+it.h+1);
+  const hit=pl.items.filter(it=>!it.food&&has(it.id)&&!(it.gone&&it.gone())).sort((a,b)=>b.layer-a.layer).find(it=>mx>=it.x&&mx<=it.x+it.w&&my>=it.y-1&&my<=it.y+it.h+1);
   if(hit){interact(hit.id);return}
   const w=pl.win;if(mx>=w[0]&&mx<=w[2]&&my>=w[1]&&my<=w[3]){SFX.blip();if(tripWinTap())return;
     roomSay(home==='mount'?(mount.summit?'Clouds below my feet...':eagleTime()?'Something is circling up there...':isWetDay()?'Snow everywhere!':'What a view!'):(home==='bath'||home==='rbath'||home==='hwc')?'Frosted glass... cozy.':(home==='garden'||home==='terrace'||home==='balcony')?(isNight()?'What a starry night!':'What a lovely day!'):home==='hbed'?(isNight()?'Goodnight, moon.':'Good morning, sunshine!'):home==='hbath'?'Frosted glass... cozy.':home==='nursery'?'Sweet dreams, little one...':home==='hut'?(isWetDay()?'A real snowstorm out there!':'Snowy peaks...'):home==='lake'?(beachPhase()==='night'?'Stars in the water...':'Mountains in the water...'):home==='bungalow'?'The sea!':home==='reef'?'Sunlight from above...':home==='hliving'?(isNight()?'Stars over the garden...':'Our garden... soon!'):home==='hkitchen'?'Fresh air!':home==='pantry'?'Just a little bulb...':home==='kitchen'?(isNight()?'The neighbours are cooking too...':'Sun on the herbs!'):home==='bedroom'?(isNight()?'Goodnight, moon.':'Good morning, sunshine!'):home==='beach'?(isLowTide()?'Low tide! Look at the shells!':beachPhase()==='sunset'?'What a sunset...':beachPhase()==='night'?'Moonlight on the sea...':'The sea is calm...'):home==='flat'?(isWetDay()?(isWinter()?'Snow is falling...':'Rainy day...'):isNight()?'City lights!':'Busy city out there!'):(isNight()?'Look, stars!':'Nice day outside!'))}
@@ -2678,7 +2678,7 @@ $('fbForm').addEventListener('submit',async e=>{
   if(!fb.fun){$('fbNote').textContent=T('Tap the hearts to rate the fun.');SFX.bad();return}
   if(text.length<10&&!fb.tags.size){$('fbNote').textContent=T('Pick a topic or write a few words.');SFX.bad();return}
   $('fbSend').disabled=true;$('fbNote').textContent=T('Sending...');
-  const entry={at:new Date().toISOString(),fun:fb.fun,tags:[...fb.tags],text,best:scores[0]?scores[0].s:0,lastScore:S.score||0,petStage:STAGES[stageIdx()].name,lines:lifetime,lang:LANG||'en',device:navigator.language||'',ver:'2.3'};
+  const entry={at:new Date().toISOString(),fun:fb.fun,tags:[...fb.tags],text,best:scores[0]?scores[0].s:0,lastScore:S.score||0,petStage:STAGES[stageIdx()].name,lines:lifetime,lang:LANG||'en',device:navigator.language||'',ver:'2.4'};
   let sent=false;const cap=await capDb();
   if(cap){try{const ref=cap.db.doc('feedback/'+cap.id);const snap=await ref.get();const prev=snap.exists&&Array.isArray((snap.data()||{}).items)?snap.data().items:[];await ref.set({lastAt:entry.at,lang:LANG||'en',count:prev.length+1,items:[...prev,entry].slice(-20)});sent=true}catch(err){sent=false}}
   if(!sent){const q=store.get('fbQueue',[]);q.push(entry);store.set('fbQueue',q.slice(-20))}
