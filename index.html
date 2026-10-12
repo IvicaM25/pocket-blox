@@ -393,7 +393,7 @@ const I18N={
 es:{
 'SCORE':'PUNTOS','HI':'RÉCORD','ROTATE':'GIRAR','Fill a row or column to clear it.<br>Clear lines to feed Pixo.':'Llena una fila o columna para borrarla.<br>Borra líneas para alimentar a Pixo.',
 'PRESS START':'PULSA START','START TO RESUME':'START PARA SEGUIR','✎ FEEDBACK · GET +1 ↻':'✎ OPINIÓN · GANA +1 ↻',
-"★ ROOM COMPLETE! WHAT'S NEXT? ★":'★ ¡CUARTO COMPLETO! ¿Y AHORA? ★','NEW FLAT · 350':'PISO NUEVO · 350','BEACH · SOON':'PLAYA · PRONTO',
+"★ ROOM COMPLETE! WHAT'S NEXT? ★":'★ ¡CUARTO COMPLETO! ¿Y AHORA? ★','NEW FLAT · 350':'PISO NUEVO · 350',"NEW FLAT · 350+40":"PISO NUEVO · 350+40","HOUSE · 600+40":"CASA · 600+40","A house and the moving van cost 640 coins... let's play some more!":"La casa y la mudanza cuestan 640 monedas... ¡sigamos jugando!","The flat and the moving van cost 390 coins... let's play some more!":"El piso y la mudanza cuestan 390 monedas... ¡sigamos jugando!","The moving van is here! Off to our house!":"¡Llegó el camión de mudanza! ¡A nuestra casa!","The moving van is here! Off to the new flat!":"¡Llegó el camión de mudanza! ¡Al piso nuevo!","MOVING VAN -{n}":"MUDANZA -{n}",'BEACH · SOON':'PLAYA · PRONTO',
 'Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.':'Alquiler: 40 monedas por semana. La cama, el reloj, la lámpara de lava y el póster se mudan también.',
 'BUY':'COMPRAR','BACK':'VOLVER','SEND':'ENVIAR','FEEDBACK':'OPINIÓN','HOW FUN IS IT?':'¿CUÁNTO TE DIVIERTE?','WHAT SHOULD WE IMPROVE?':'¿QUÉ MEJORAMOS?',
 'Write in your own language, any language is welcome!':'Escribe en tu propio idioma, ¡cualquier idioma vale!',
@@ -441,7 +441,7 @@ es:{
 de:{
 'SCORE':'PUNKTE','HI':'REKORD','ROTATE':'DREHEN','Fill a row or column to clear it.<br>Clear lines to feed Pixo.':'Fülle eine Reihe oder Spalte, um sie zu leeren.<br>Leere Linien, um Pixo zu füttern.',
 'PRESS START':'DRÜCK START','START TO RESUME':'START ZUM WEITERSPIELEN','✎ FEEDBACK · GET +1 ↻':'✎ FEEDBACK · +1 ↻ HOLEN',
-"★ ROOM COMPLETE! WHAT'S NEXT? ★":'★ ZIMMER FERTIG! WIE GEHT ES WEITER? ★','NEW FLAT · 350':'NEUE WOHNUNG · 350','BEACH · SOON':'STRAND · BALD',
+"★ ROOM COMPLETE! WHAT'S NEXT? ★":'★ ZIMMER FERTIG! WIE GEHT ES WEITER? ★','NEW FLAT · 350':'NEUE WOHNUNG · 350',"NEW FLAT · 350+40":"NEUE WOHNUNG · 350+40","HOUSE · 600+40":"HAUS · 600+40","A house and the moving van cost 640 coins... let's play some more!":"Haus und Umzugswagen kosten 640 Münzen... spielen wir weiter!","The flat and the moving van cost 390 coins... let's play some more!":"Wohnung und Umzugswagen kosten 390 Münzen... spielen wir weiter!","The moving van is here! Off to our house!":"Der Umzugswagen ist da! Ab in unser Haus!","The moving van is here! Off to the new flat!":"Der Umzugswagen ist da! Ab in die neue Wohnung!","MOVING VAN -{n}":"UMZUGSWAGEN -{n}",'BEACH · SOON':'STRAND · BALD',
 'Flat rent: 40 coins a week. Bed, clock, lava lamp and poster come along.':'Miete: 40 Münzen pro Woche. Bett, Uhr, Lavalampe und Poster ziehen mit um.',
 'BUY':'KAUFEN','BACK':'ZURÜCK','SEND':'SENDEN','FEEDBACK':'FEEDBACK','HOW FUN IS IT?':'WIE VIEL SPASS MACHT ES?','WHAT SHOULD WE IMPROVE?':'WAS SOLLEN WIR VERBESSERN?',
 'Write in your own language, any language is welcome!':'Schreib in deiner eigenen Sprache, jede Sprache ist willkommen!',
@@ -1286,7 +1286,7 @@ const BEDROOM_ITEMS=[
  {id:'curtains',name:'CURTAINS',price:50,lv:1,x:12,y:3,w:40,h:33,layer:0},
  {id:'bed',name:'BED',x:2,y:49,w:47,h:43,layer:0,carried:true,gone:()=>has('bigbed')},
  {id:'books',name:'BOOKSHELF',price:115,lv:1,x:60,y:16,w:30,h:26,layer:0,say:'Once upon a time...'},
- {id:'bigbed',name:'DOUBLE BED',price:285,lv:1,x:2,y:46,w:58,h:46,layer:0},
+ {id:'bigbed',name:'DOUBLE BED',price:285,lv:1,x:2,y:46,w:58,h:46,layer:0,opt:true},
  {id:'teddy',name:'TEDDY BEAR',price:35,lv:1,x:26,y:55,w:13,h:14,layer:0,say:'My old buddy!'},
  {id:'nightstand',name:'NIGHTSTAND',price:65,lv:1,x:62,y:70,w:17,h:24,layer:0,say:'A place for my stuff.'},
  {id:'alarm',name:'ALARM CLOCK',price:40,lv:1,x:64,y:60,w:12,h:11,layer:0},
@@ -2284,7 +2284,7 @@ function startSummit(){if(!mount||mount.summit)return;mount.summit=true;store.se
   setTimeout(()=>roomSay("Honestly... it's not as fun as it looks on social media."),2600)}
 
 /* chapters: what comes next once a place is complete */
-function placeComplete(){if(inTrip())return true;if(inMount())return !!mount.summit||[...MOUNT_ITEMS,...HUT_ITEMS,...LAKE_ITEMS].filter(i=>!i.food).every(i=>mount.owned.includes(i.id));if(inBeach())return [...BEACH_ITEMS,...BUNGALOW_ITEMS,...REEF_ITEMS].filter(i=>!i.food).every(i=>beach.owned.includes(i.id));if(inHouse())return [...HLIVING_ITEMS,...HKITCHEN_ITEMS,...HWC_ITEMS,...PANTRY_ITEMS].filter(i=>!i.food&&!i.carried).every(i=>house.owned.includes(i.id));if(inRoom())return [...ROOM_ITEMS,...RBATH_ITEMS].filter(i=>!i.food).every(i=>owned.includes(i.id));if(inFlat())return [...FLAT_ITEMS,...KITCHEN_ITEMS,...BEDROOM_ITEMS,...BATH_ITEMS].filter(i=>!i.food&&!i.carried).every(i=>flat.owned.includes(i.id));return P().items.filter(i=>!i.food&&!i.carried).every(i=>has(i.id))}
+function placeComplete(){if(inTrip())return true;if(inMount())return !!mount.summit||[...MOUNT_ITEMS,...HUT_ITEMS,...LAKE_ITEMS].filter(i=>!i.food).every(i=>mount.owned.includes(i.id));if(inBeach())return [...BEACH_ITEMS,...BUNGALOW_ITEMS,...REEF_ITEMS].filter(i=>!i.food).every(i=>beach.owned.includes(i.id));if(inHouse())return [...HLIVING_ITEMS,...HKITCHEN_ITEMS,...HWC_ITEMS,...PANTRY_ITEMS].filter(i=>!i.food&&!i.carried).every(i=>house.owned.includes(i.id));if(inRoom())return [...ROOM_ITEMS,...RBATH_ITEMS].filter(i=>!i.food).every(i=>owned.includes(i.id));if(inFlat())return [...FLAT_ITEMS,...KITCHEN_ITEMS,...BEDROOM_ITEMS,...BATH_ITEMS].filter(i=>!i.food&&!i.carried&&!i.opt).every(i=>flat.owned.includes(i.id));return P().items.filter(i=>!i.food&&!i.carried).every(i=>has(i.id))}
 function chapterOpts(){
   if(inTrip()){const t=trip();return{title:t.finale?'★ WHAT A TRIP! ★':'★ HOLIDAY TIME ★',note:EVENT_TXT[t.event],a:'tripHome',b:null}}
   if(inRoom())return{title:"★ ROOM COMPLETE! WHAT'S NEXT? ★",note:'New flat: 350 coins + 45 a week. Beach holiday: 350 coins.',a:'flat',b:beach?'visitbeach':'beach'};
@@ -2296,25 +2296,47 @@ function chapterOpts(){
   if(inBeach())return{title:"★ BEST HOLIDAY EVER! WHAT'S NEXT? ★",note:mount?'Head home, or back to the mountains.':'Mountains: 350 coins. Short on coins? The bank lends up to 175.',a:house?'backhouse':flat?'backflat':'flat',b:mount?'visitmount':'mountains'};
   return{title:'★ SUMMIT REACHED! ★',note:'Time to head home. Pixo needs a rest.',a:'gohome',b:null};
 }
-const CH_LABEL={flat:'NEW FLAT · 350',beach:'BEACH · 350',visitbeach:'VISIT THE BEACH',backflat:'BACK TO THE FLAT',mountains:'MOUNTAINS · 350',visitmount:'VISIT THE MOUNTAINS',gohome:'BACK HOME',house:'HOUSE · 600',ring:'RING · 500',ski:'SKI TRIP',island:'ISLAND TRIP',tripHome:'BACK HOME',backhouse:'BACK TO THE HOUSE'};
+const MOVE_FEE=40;
+const CH_LABEL={flat:'NEW FLAT · 350+40',beach:'BEACH · 350',visitbeach:'VISIT THE BEACH',backflat:'BACK TO THE FLAT',mountains:'MOUNTAINS · 350',visitmount:'VISIT THE MOUNTAINS',gohome:'BACK HOME',house:'HOUSE · 600+40',ring:'RING · 500',ski:'SKI TRIP',island:'ISLAND TRIP',tripHome:'BACK HOME',backhouse:'BACK TO THE HOUSE'};
 let chArm='';
-function renderChapter(){const ch=$('chapter'),show=placeComplete();ch.hidden=!show;if(!show)return;const o=chapterOpts();
+function renderChapter(){const ch=$('chapter'),show=placeComplete()&&!RM.van;ch.hidden=!show;if(!show)return;const o=chapterOpts();
   $('chTitle').textContent=T(o.title);$('chNote').textContent=T(o.note);
   [['chA',o.a],['chB',o.b],['chC',o.c],['chD',o.d],['chE',o.e]].forEach(([id,act])=>{const b=$(id);b.hidden=!act;if(!act)return;b.dataset.act=act;b.disabled=false;if(chArm!==act)b.textContent=T(CH_LABEL[act])})}
 function pauseRent(){if(inHouse()&&!house.pausedAt){house.pausedAt=Date.now();store.set('house',house)}else if(inFlat()&&!flat.pausedAt){flat.pausedAt=Date.now();store.set('flat',flat)}}
 function backHouse(){if(house.pausedAt){house.paidUntil+=Date.now()-house.pausedAt;delete house.pausedAt}house.dirty=true;house.laundry=true;store.set('house',house);home='hliving'}
 function backToFlat(){if(flat.pausedAt){flat.paidUntil+=Date.now()-flat.pausedAt;delete flat.pausedAt}flat.dirty=true;flat.laundry=true;store.set('flat',flat);home='flat'}
+/* ---------- moving day: a little delivery van brings Pixo's things (fee MOVE_FEE) ---------- */
+const MOVE_MS=3800;
+function startMove(act){RM.van={t0:Date.now(),act};RM.sel=null;RM.meal=null;$('chapter').hidden=true;roomSay(act==='house'?'The moving van is here! Off to our house!':'The moving van is here! Off to the new flat!');
+  tone([196,0,196,247,294],.09,'square',.03);setTimeout(()=>{RM.van=null;goPlace(act);setTimeout(()=>toast(T('MOVING VAN -{n}',{n:MOVE_FEE})),900)},MOVE_MS)}
+function drawVan(c,x,y,f){box(c,x,y+4,30,18,{b:'#f4f1e8',l:'#ffffff',s:'#cfc8b8'});box(c,x+30,y+9,13,13,{b:'#ffd166',l:'#fff0b3',s:'#d9b44a'});
+  dot(c,x+32,y+11,'#7cc0f7',8,5);dot(c,x+32,y+11,'#bfe2ff',3,2);dot(c,x+42,y+18,'#ff8a3d',2,2);dot(c,x+1,y+19,'#e5484d',2,2);
+  dot(c,x+6,y+9,'#e5484d',18,2);ell(c,0,0,x+15,y+14,3.2,2.6,{b:'#ff6b8a',l:'#ffb3c7'});
+  [x+8,x+34].forEach(wx=>{ell(c,0,0,wx,y+22,4,4,{b:'#2a2638',l:'#4a4560'});dot(c,wx-1+((f>>1)%2),y+21,'#9aa6b4',2,2)})}
+function drawMoveScene(c){const v=RM.van,t=Math.min(1,(Date.now()-v.t0)/MOVE_MS),f=RM.f||0,house=v.act==='house';
+  const g=c.createLinearGradient(0,0,0,86);g.addColorStop(0,'#8fd0ff');g.addColorStop(1,'#d7f0ff');c.fillStyle=g;c.fillRect(0,0,128,112);
+  ell(c,0,0,18,16,9,4,{b:'#ffffff',l:'#ffffff',s:'#e3f1fb'},{ol:''});ell(c,0,0,96-((f>>2)%40),12,8,3,{b:'#ffffff',l:'#ffffff',s:'#e3f1fb'},{ol:''});
+  if(house){for(let j=0;j<16;j++)dot(c,84-j*2,22+j,'#c0504d',8+j*4,1);box(c,58,38,56,40,{b:'#f2d7a6',l:'#f8e6c4',s:'#d9b880'});dot(c,62,46,'#7cc0f7',12,10);dot(c,98,46,'#7cc0f7',12,10);box(c,80,56,12,22,{b:'#8a5a3c',l:'#a8724f',s:'#6b4430'});dot(c,108,26,'#8a5a3c',5,10);
+    dot(c,0,72,'#6ac46a',128,6)}
+  else{box(c,62,10,52,68,{b:'#c9b8e8',l:'#ddd0f2',s:'#a896cc'});for(let r=0;r<4;r++)for(let k=0;k<3;k++)dot(c,67+k*16,15+r*13,isNight()?'#ffd166':'#7cc0f7',10,8);box(c,82,62,12,16,{b:'#6b4430',l:'#8a5a3c',s:'#4f3122'})}
+  dot(c,0,78,'#9aa6b4',128,4);dot(c,0,82,'#5c6470',128,30);for(let k=0;k<128;k+=16)dot(c,(k-(f%16)*0)+4,95,'#f4f1e8',8,2);
+  const vx=t<.4?Math.round(-48+(t/.4)*54):6;drawVan(c,vx,62,t<.4?f:0);
+  if(t>=.4){const k=(t-.4)/.6,px=Math.round(48+k*34);if(px<80){box(c,px+2,58-((f>>2)%2),10,8,{b:'#c98a4a',l:'#e6aa6a',s:'#9a6630'})}
+    drawPixo(c,Math.min(px,78),62,Math.max(1,stageIdx()),{pal:PX,noShadow:true});
+    if(house&&px-22>=46)drawPixo(c,px-22,64,3,{pal:pixaPal(),flower:true,noShadow:true});
+    for(let b=0;b<Math.min(3,Math.floor(k*4));b++)box(c,98+b*9,72-(b===2?7:0),9,7,{b:'#c98a4a',l:'#e6aa6a',s:'#9a6630'})}
+  if(t>.85){c.fillStyle=`rgba(255,255,255,${((t-.85)/.15).toFixed(2)})`;c.fillRect(0,0,128,112)}}
 function goPlace(act){
   const now=Date.now(),debt=()=>store.get('debt',0);
   if(act==='ring'){coins-=500;store.set('coins',coins);house.ring=now;house.eggAt=now;store.set('house',house);startProposal();toast('SHE SAID YES! ♥');render();renderShop();drawRoom();return}
   if(inHouse()&&pixaWishOn()&&pixaWishId()==='trip'&&['beach','visitbeach','mountains','visitmount'].includes(act)){grantWish();carePixa('trip')}
-  if(act==='flat'){coins-=350;flat={rent:45,owned:['poster','clock','bed','lamp'],paidUntil:now+7*864e5,fishFedAt:0,movedAt:now};store.set('flat',flat);home='flat';
+  if(act==='flat'){coins-=350+MOVE_FEE;flat={rent:45,owned:['poster','clock','bed','lamp'],paidUntil:now+7*864e5,fishFedAt:0,movedAt:now};store.set('flat',flat);home='flat';
     toast('MOVED IN! RENT PAID 7 DAYS');roomSay('Our new flat! My bed, clock, lamp and poster came along!')}
   else if(act==='beach'||act==='visitbeach'){if(act==='beach'){coins-=350;beach={owned:[],at:now,met:false};store.set('beach',beach)}
     pauseRent();home='beach';toast('OFF TO THE BEACH!');roomSay('Pack your bags! Holiday time!')}
   else if(act==='mountains'||act==='visitmount'){if(act==='mountains'){if(coins>=350)coins-=350;else{const loan=350-coins;coins=0;store.set('debt',debt()+loan);setTimeout(()=>toast(T('BANK LOAN -{n}',{n:loan})),600)}mount={owned:[],at:now,summit:false};store.set('mount',mount)}
     pauseRent();home='mount';toast('OFF TO THE MOUNTAINS!');roomSay('Fresh mountain air! Let\'s get some gear!')}
-  else if(act==='house'){coins-=600;house={rate:70,owned:HOUSE_CARRY.filter(id=>flat.owned.includes(id)),paidUntil:now+7*864e5,left:20,movedAt:now};store.set('house',house);home='hliving';
+  else if(act==='house'){coins-=600+MOVE_FEE;house={rate:70,owned:HOUSE_CARRY.filter(id=>flat.owned.includes(id)),paidUntil:now+7*864e5,left:20,movedAt:now};store.set('house',house);home='hliving';
     toast('MOVED IN! ♥');roomSay('Our own house! Pixa moved in! ♥')}
   else if(act==='tripHome'){backHouse();toast('HOME SWEET HOME!');roomSay('Home sweet home! What a trip...')}
   else if(act==='backhouse'){backHouse();toast('HOME SWEET HOME!');roomSay('Home sweet home!')}
@@ -2324,13 +2346,13 @@ function goPlace(act){
   store.set('coins',coins);store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.jump=6;RM.meal=null;SFX.grow();render();renderShop();drawRoom();
 }
 function chapterClick(e){audio();const act=e.currentTarget.dataset.act;if(!act)return;if(act==='ski'||act==='island'){SFX.blip();openPlanner(act);return}
-  const cost=act==='ring'?500:act==='house'?600:(act==='flat'||act==='beach'||act==='mountains')?350:0,loanOk=act==='mountains'&&inBeach()&&coins>=175,debt=store.get('debt',0);
+  const cost=act==='ring'?500:act==='house'?600+MOVE_FEE:act==='flat'?350+MOVE_FEE:(act==='beach'||act==='mountains')?350:0,loanOk=act==='mountains'&&inBeach()&&coins>=175,debt=store.get('debt',0);
   if(cost&&debt>0&&act!=='gohome'){SFX.bad();roomSay(T('First we pay back the bank: {n} coins left.',{n:debt}));return}
-  if(coins<cost&&!loanOk){SFX.bad();roomSay(act==='ring'?"A ring costs 500 coins... let's play some more!":act==='house'?"A house costs 600 coins... let's play some more!":act==='flat'?"Moving costs 350 coins... let's play some more!":act==='mountains'&&inBeach()?'We need at least 175 coins, the bank lends the rest.':"A trip costs 350 coins... let's play some more!");return}
+  if(coins<cost&&!loanOk){SFX.bad();roomSay(act==='ring'?"A ring costs 500 coins... let's play some more!":act==='house'?"A house and the moving van cost 640 coins... let's play some more!":act==='flat'?"The flat and the moving van cost 390 coins... let's play some more!":act==='mountains'&&inBeach()?'We need at least 175 coins, the bank lends the rest.':"A trip costs 350 coins... let's play some more!");return}
   if(chArm!==act){chArm=act;e.currentTarget.textContent=coins<cost?T('LOAN {n}? TAP AGAIN',{n:cost-coins}):T('SURE? TAP AGAIN');SFX.blip();setTimeout(()=>{if(chArm===act){chArm='';renderChapter()}},3000);return}
-  chArm='';goPlace(act)}
-document.querySelectorAll('#roomTabs [data-room]').forEach(b=>b.addEventListener('click',()=>{if(!(inFlat()||inRoom()||inHouse()||inBeach()||inMount()||inTrip())||home===b.dataset.room)return;audio();SFX.blip();home=b.dataset.room;store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.meal=null;renderShop();drawRoom();gardenInit();upperInit();checkHatch();if(inHouse()&&maybeEnding()){renderShop();drawRoom();return}roomSay({ski:'Back on the slopes!',skiroom:'Our cozy room.',island:'Back to the beach!',iroom:'Our room with a view.',hbed:'Our bedroom ♥',hbath:'The bathroom!',balcony:'What a view!',nursery:'The nursery!',garden:'The garden!',terrace:'The terrace!',mount:'Back to camp!',hut:'The hut! So cozy.',lake:'The lake! So quiet.',beach:'The beach!',bungalow:'Our bungalow!',reef:'Splash! Diving time!',hliving:'The living room!',hkitchen:'The kitchen!',hwc:'The WC!',pantry:'The pantry!',room:'My room!',rbath:'The bathroom!',bath:'The bathroom!',kitchen:'The kitchen!',bedroom:'The bedroom!'}[home]||'The living room!')}));
-document.querySelectorAll('#floorTabs [data-floor]').forEach(b=>b.addEventListener('click',()=>{const fl=b.dataset.floor,t=FLOORS[fl].find(roomOpen);if(!inHouse()||!t||floorOf(home)===fl)return;audio();SFX.blip();gardenInit();upperInit();checkHatch();home=t;store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.meal=null;if(!maybeEnding())roomSay({ground:'Downstairs!',yard:'Fresh air!',upper:'Upstairs!'}[fl]);renderShop();drawRoom()}));
+  chArm='';if(act==='flat'||act==='house')startMove(act);else goPlace(act)}
+document.querySelectorAll('#roomTabs [data-room]').forEach(b=>b.addEventListener('click',()=>{if(RM.van||!(inFlat()||inRoom()||inHouse()||inBeach()||inMount()||inTrip())||home===b.dataset.room)return;audio();SFX.blip();home=b.dataset.room;store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.meal=null;renderShop();drawRoom();gardenInit();upperInit();checkHatch();if(inHouse()&&maybeEnding()){renderShop();drawRoom();return}roomSay({ski:'Back on the slopes!',skiroom:'Our cozy room.',island:'Back to the beach!',iroom:'Our room with a view.',hbed:'Our bedroom ♥',hbath:'The bathroom!',balcony:'What a view!',nursery:'The nursery!',garden:'The garden!',terrace:'The terrace!',mount:'Back to camp!',hut:'The hut! So cozy.',lake:'The lake! So quiet.',beach:'The beach!',bungalow:'Our bungalow!',reef:'Splash! Diving time!',hliving:'The living room!',hkitchen:'The kitchen!',hwc:'The WC!',pantry:'The pantry!',room:'My room!',rbath:'The bathroom!',bath:'The bathroom!',kitchen:'The kitchen!',bedroom:'The bedroom!'}[home]||'The living room!')}));
+document.querySelectorAll('#floorTabs [data-floor]').forEach(b=>b.addEventListener('click',()=>{const fl=b.dataset.floor,t=FLOORS[fl].find(roomOpen);if(RM.van||!inHouse()||!t||floorOf(home)===fl)return;audio();SFX.blip();gardenInit();upperInit();checkHatch();home=t;store.set('place',home);RM.px=P().walk[0]+10;RM.mode='walk';RM.sel=null;RM.meal=null;if(!maybeEnding())roomSay({ground:'Downstairs!',yard:'Fresh air!',upper:'Upstairs!'}[fl]);renderShop();drawRoom()}));
 $('chA').addEventListener('click',chapterClick);$('chB').addEventListener('click',chapterClick);$('chC').addEventListener('click',chapterClick);$('chD').addEventListener('click',chapterClick);$('chE').addEventListener('click',chapterClick);
 /* love on holiday */
 const pixaHere=()=>inTrip()||(inBeach()&&!!beach&&beach.met)||inHouse()||(inMount()&&!!house&&!!mount&&(home!=='mount'||!mount.summit));
@@ -2427,6 +2449,7 @@ function drawRoom(){
     if(home==='kitchen'&&RM.cook>Date.now())glow(c,16,52,18,'rgba(255,140,60,.35)');
     const w=pl.win;glow(c,(w[0]+w[2])/2,(w[1]+w[3])/2,24,'rgba(160,150,255,.14)');c.globalCompositeOperation='source-over'}
   c.globalCompositeOperation='multiply';const v=c.createRadialGradient(64,56,40,64,56,92);v.addColorStop(0,'rgba(255,255,255,0)');v.addColorStop(1,'rgba(120,80,90,.35)');c.fillStyle=v;c.fillRect(0,0,128,112);c.globalCompositeOperation='source-over';
+  if(RM.van)drawMoveScene(c);
   if(RM.flash>Date.now()){c.fillStyle='rgba(255,255,255,.7)';c.fillRect(0,0,128,112)}
   present($('room'),RB,$('shop').clientWidth||300);
 }
@@ -2585,7 +2608,7 @@ function interact(id){
   }
 }
 $('room').addEventListener('pointerdown',e=>{
-  audio();const cv=e.currentTarget,pl=P();const mx=e.offsetX/cv.clientWidth*128,my=e.offsetY/cv.clientHeight*112;
+  if(RM.van)return;audio();const cv=e.currentTarget,pl=P();const mx=e.offsetX/cv.clientWidth*128,my=e.offsetY/cv.clientHeight*112;
   if(home==='nursery'&&house&&house.jrAt&&!aged()){const js=jrStage(),cr=has('cradle'),jx=js===0?(cr?12:56):(RM.jrX||60),jy=js===0?(cr?52:84):pl.petY;if(mx>=jx&&mx<=jx+24&&my>=jy&&my<=jy+24){fx('heart',jx+9,jy-8);tone([1175,1568],.06);roomSay(js===0?'Goo goo! ♥':js===1?'Hi Dad! Play with me!':js===2?'Dad, you are so embarrassing...':'Love you, Dad!');return}}
   if(pixaHere()&&RM.pixaX!=null&&mx>=RM.pixaX&&mx<=RM.pixaX+24&&my>=pl.petY-2&&my<=pl.petY+24){fx('heart',RM.pixaX+9,pl.petY-8);tone([988,1319],.06);carePixa('pet');roomSay('Hi there, cutie! ♥');return}
   if(RM.mode!=='sit'&&mx>=RM.px&&mx<=RM.px+24&&my>=pl.petY-2&&my<=pl.petY+24){petPixo();return}
