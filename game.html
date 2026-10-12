@@ -1376,7 +1376,7 @@ const HOUSE_ROOMS=['hliving','hkitchen','hwc','pantry'];
 let house=store.get('house',null);
 if(HOUSE_ROOMS.includes(home)&&!house)home=flat?'flat':'room';
 function inHouse(){return HOUSE_ROOMS.includes(home)}
-const HOUSE_CARRY=['sofa','record','aquarium','fridge','coffee'];
+const HOUSE_CARRY=['record','aquarium','fridge','coffee'];
 const BRICK={b:'#c8644a',l:'#e2826a',s:'#9a4632'},STONE={b:'#a9a39a',l:'#cbc5bb',s:'#7f7a72'},IVORY={b:'#f6f1e7',l:'#ffffff',s:'#d9d0bf'};
 const HLIVING_ITEMS=[
  {id:'gclock',name:'GRANDFATHER CLOCK',price:235,lv:1,x:3,y:20,w:16,h:74,layer:0},
@@ -1386,7 +1386,7 @@ const HLIVING_ITEMS=[
  {id:'piano',name:'PIANO',price:340,lv:1,x:84,y:52,w:40,h:42,layer:0},
  {id:'record',name:'RECORD PLAYER',x:92,y:38,w:26,h:14,layer:0,carried:true},
  {id:'brug',name:'BIG RUG',price:80,lv:1,x:40,y:98,w:46,h:10,layer:1,say:'So cozy!'},
- {id:'sofa',name:'SOFA',x:2,y:86,w:36,h:25,layer:3,carried:true},
+ {id:'sofa',name:'SOFA',price:260,lv:1,x:2,y:86,w:36,h:25,layer:3},
  {id:'flamp',name:'FLOOR LAMP',price:90,lv:1,x:112,y:66,w:14,h:44,layer:3},
  {id:'fishfood',name:'FISH FOOD',price:6,lv:1,w:12,h:13,food:'fish'},
  {id:'roses',name:'ROSES',price:12,lv:1,w:12,h:16,food:'gift'}
@@ -1729,7 +1729,7 @@ PLACES.lake={title:'MOUNTAIN LAKE',items:LAKE_ITEMS,needs:LAKE_NEEDS,win:[0,0,12
 /* ---------- the house garden: front garden + terrace ---------- */
 HOUSE_ROOMS.push('garden','terrace');
 const GROUND_ITEMS=()=>[...HLIVING_ITEMS,...HKITCHEN_ITEMS,...HWC_ITEMS,...PANTRY_ITEMS];
-const groundDone=()=>!!house&&GROUND_ITEMS().filter(i=>!i.food&&!i.carried).every(i=>house.owned.includes(i.id));
+const groundDone=()=>!!house&&(!!house.mowAt||GROUND_ITEMS().filter(i=>!i.food&&!i.carried).every(i=>house.owned.includes(i.id)));
 const DAY=864e5;
 const GARDEN_ITEMS=[
  {id:'hedge',name:'HEDGE',price:80,lv:1,x:2,y:26,w:40,h:36,layer:0},
@@ -1827,19 +1827,19 @@ const floorOf=r=>Object.keys(FLOORS).find(k=>FLOORS[k].includes(r));
 const gardenDone=()=>!!house&&[...GARDEN_ITEMS,...TERRACE_ITEMS].filter(i=>!i.food).every(i=>house.owned.includes(i.id));
 const upperOpen=()=>groundDone()&&gardenDone();
 function roomOpen(r){const fl=floorOf(r);if(fl==='ground')return true;if(fl==='yard')return groundDone();if(r==='nursery')return upperOpen()&&!!house.ring;return upperOpen()}
-function upperInit(){if(house&&upperOpen()&&!house.upperAt){house.upperAt=Date.now();['bigbed','tub'].forEach(id=>{if(!house.owned.includes(id))house.owned.push(id)});store.set('house',house)}}
+function upperInit(){if(house&&upperOpen()&&!house.upperAt){house.upperAt=Date.now();store.set('house',house)}}
 const JR={b:'#c7b8f5',l:'#ece6ff',s:'#9a88d6'},OLDP={b:'#c3d3cc',l:'#eef4f1',s:'#93a69d'},OLDA={b:'#e6cdd5',l:'#f6eaee',s:'#bfa2ac'};
 const aged=()=>!!(house&&house.endAt);
 const pixaPal=()=>aged()&&inHouse()?OLDA:PIXA;
 const HBED_ITEMS=[
- {id:'bigbed',name:'DOUBLE BED',x:2,y:46,w:58,h:46,layer:0,carried:true},
+ {id:'bigbed',name:'DOUBLE BED',price:370,lv:1,x:2,y:46,w:58,h:46,layer:0},
  {id:'nightstand',name:'NIGHTSTAND',price:65,lv:1,x:60,y:70,w:17,h:24,layer:0,say:'A place for my stuff.'},
  {id:'vanity',name:'VANITY TABLE',price:195,lv:1,x:77,y:48,w:20,h:46,layer:0},
  {id:'wardrobe',name:'WARDROBE',price:210,lv:1,x:97,y:22,w:30,h:72,layer:0},
  {id:'carpet',name:'ROUND RUG',price:45,lv:1,x:56,y:98,w:36,h:9,layer:1,say:'Soft and fluffy!'}
 ];
 const HBATH_ITEMS=[
- {id:'tub',name:'BATHTUB',x:2,y:58,w:54,h:36,layer:0,carried:true},
+ {id:'tub',name:'BATHTUB',price:330,lv:1,x:2,y:58,w:54,h:36,layer:0},
  {id:'duck',name:'RUBBER DUCK',price:20,lv:1,x:40,y:52,w:10,h:8,layer:0,say:'Quack!'},
  {id:'dsink',name:'DOUBLE SINK',price:235,lv:1,x:58,y:24,w:38,h:70,layer:0},
  {id:'toilet2',name:'TOILET',price:90,lv:1,x:100,y:26,w:22,h:68,layer:0},
