@@ -382,7 +382,7 @@ es:{
 'BUY':'COMPRAR','BACK':'VOLVER','SEND':'ENVIAR','FEEDBACK':'OPINIÓN','HOW FUN IS IT?':'¿CUÁNTO TE DIVIERTE?','WHAT SHOULD WE IMPROVE?':'¿QUÉ MEJORAMOS?',
 'Write in your own language, any language is welcome!':'Escribe en tu propio idioma, ¡cualquier idioma vale!',
 'Watch a short video<br>to get 1 rotate.':'Mira un vídeo corto<br>y gana 1 giro.','▶ WATCH (5s)':'▶ VER (5s)','NO THANKS':'NO, GRACIAS','VIDEO':'VÍDEO','(placeholder for a real ad)':'(aquí irá un anuncio real)',
-'PAUSE':'PAUSA','GAME OVER':'FIN DEL JUEGO','NEW HIGH SCORE!<br>ENTER YOUR NAME':'¡NUEVO RÉCORD!<br>ESCRIBE TU NOMBRE','OK':'OK','CHOOSE LANGUAGE':'ELIGE IDIOMA','🌐 LANGUAGE':'🌐 IDIOMA',"AD SETTINGS":"AJUSTES DE ANUNCIOS","PRIVACY POLICY":"PRIVACIDAD","NOT AVAILABLE":"NO DISPONIBLE",
+'PAUSE':'PAUSA','GAME OVER':'FIN DEL JUEGO','NEW HIGH SCORE!<br>ENTER YOUR NAME':'¡NUEVO RÉCORD!<br>ESCRIBE TU NOMBRE','OK':'OK','CHOOSE LANGUAGE':'ELIGE IDIOMA','🌐 LANGUAGE':'🌐 IDIOMA',"OPENING E-MAIL...":"ABRIENDO CORREO...","AD SETTINGS":"AJUSTES DE ANUNCIOS","PRIVACY POLICY":"PRIVACIDAD","NOT AVAILABLE":"NO DISPONIBLE",
 'TAP A BLOCK TO TURN':'TOCA UNA PIEZA PARA GIRAR','NEED A TURN? TAP ↻':'¿UN GIRO? TOCA ↻','DRAG A BLOCK':'ARRASTRA UNA PIEZA','COMBO':'COMBO',
 "⌂ PIXO'S HOME":'⌂ CASA DE PIXO','COINS':'MONEDAS','SOUND ON':'SONIDO SÍ','SOUND OFF':'SONIDO NO','BONUS +{n} ↻':'BONUS +{n} ↻',
 "Let's go!":'¡Vamos!','{n} LINES! +{g}':'¡{n} LÍNEAS! +{g}','I hatched!!':'¡¡He nacido!!','I grew up!':'¡He crecido!','NEW ROOM ITEMS!':'¡COSAS NUEVAS!',
@@ -430,7 +430,7 @@ de:{
 'BUY':'KAUFEN','BACK':'ZURÜCK','SEND':'SENDEN','FEEDBACK':'FEEDBACK','HOW FUN IS IT?':'WIE VIEL SPASS MACHT ES?','WHAT SHOULD WE IMPROVE?':'WAS SOLLEN WIR VERBESSERN?',
 'Write in your own language, any language is welcome!':'Schreib in deiner eigenen Sprache, jede Sprache ist willkommen!',
 'Watch a short video<br>to get 1 rotate.':'Schau ein kurzes Video<br>für 1 Drehung.','▶ WATCH (5s)':'▶ ANSEHEN (5s)','NO THANKS':'NEIN, DANKE','VIDEO':'VIDEO','(placeholder for a real ad)':'(hier kommt echte Werbung hin)',
-'PAUSE':'PAUSE','GAME OVER':'SPIEL VORBEI','NEW HIGH SCORE!<br>ENTER YOUR NAME':'NEUER REKORD!<br>GIB DEINEN NAMEN EIN','OK':'OK','CHOOSE LANGUAGE':'SPRACHE WÄHLEN','🌐 LANGUAGE':'🌐 SPRACHE',"AD SETTINGS":"WERBE-EINSTELLUNGEN","PRIVACY POLICY":"DATENSCHUTZ","NOT AVAILABLE":"NICHT VERFÜGBAR",
+'PAUSE':'PAUSE','GAME OVER':'SPIEL VORBEI','NEW HIGH SCORE!<br>ENTER YOUR NAME':'NEUER REKORD!<br>GIB DEINEN NAMEN EIN','OK':'OK','CHOOSE LANGUAGE':'SPRACHE WÄHLEN','🌐 LANGUAGE':'🌐 SPRACHE',"OPENING E-MAIL...":"E-MAIL WIRD GEÖFFNET...","AD SETTINGS":"WERBE-EINSTELLUNGEN","PRIVACY POLICY":"DATENSCHUTZ","NOT AVAILABLE":"NICHT VERFÜGBAR",
 'TAP A BLOCK TO TURN':'TIPP EINEN BLOCK ZUM DREHEN','NEED A TURN? TAP ↻':'DREHEN? TIPP ↻','DRAG A BLOCK':'ZIEH EINEN BLOCK','COMBO':'KOMBO',
 "⌂ PIXO'S HOME":'⌂ PIXOS ZUHAUSE','COINS':'MÜNZEN','SOUND ON':'TON AN','SOUND OFF':'TON AUS','BONUS +{n} ↻':'BONUS +{n} ↻',
 "Let's go!":'Los geht’s!','{n} LINES! +{g}':'{n} LINIEN! +{g}','I hatched!!':'Ich bin geschlüpft!!','I grew up!':'Ich bin gewachsen!','NEW ROOM ITEMS!':'NEUE SACHEN!',
@@ -2698,6 +2698,7 @@ function drawFb(){
   $('hearts').innerHTML=[1,2,3,4,5].map(n=>`<button type="button" class="heart${fb.fun>=n?' on':''}" data-n="${n}" aria-label="${n} of 5">♥</button>`).join('');
   $('chips').innerHTML=TAGS.map(t=>`<button type="button" class="chip${fb.tags.has(t)?' on':''}" data-tag="${t}">${T(t)}</button>`).join('');
 }
+const FB_MAIL='m.ivica259@gmail.com';
 function openFb(){fbPrev=S.state;fb={fun:0,tags:new Set()};$('fbText').value='';$('fbSend').disabled=false;
   $('fbNote').textContent=T(fbCooldown()?'Thanks again! Next reward unlocks tomorrow.':'Reward: +1 rotate in your next game');
   drawFb();S.state='fb';SFX.blip();render();capDb()}
@@ -2718,7 +2719,8 @@ $('fbForm').addEventListener('submit',async e=>{
   if(rewarded){store.set('fbAt',Date.now());addBonusRot(1)}
   SFX.grow();say('Thank you!!','happy');S.state=fbPrev;render();
   toast(rewarded?'THANKS! +1 ↻ NEXT GAME':'THANKS!');
-  if(!sent) setTimeout(()=>toast('SAVED ON THIS DEVICE'),900);
+  if(!sent){const body=['Pocket Blox feedback','Fun: '+entry.fun+'/5','Topics: '+(entry.tags.join(', ')||'-'),'Text: '+(entry.text||'-'),'','Best score: '+entry.best,'Pixo: '+entry.petStage,'Lines: '+entry.lines,'Language: '+entry.lang+' / '+entry.device,'Version: '+entry.ver+(NATIVE?' (Android)':' (web)')].join('\n');
+    setTimeout(()=>{toast(T('OPENING E-MAIL...'));try{window.location.href='mailto:'+FB_MAIL+'?subject='+encodeURIComponent('Pocket Blox feedback '+entry.ver)+'&body='+encodeURIComponent(body)}catch(e){}},700)}
 });
 
 /* ---------- world top 10 (Claude version; public build falls back to local scores) ---------- */
