@@ -1,12 +1,16 @@
 name: iOS TestFlight upload
 # Change ios-release.txt (one line: build number) to build, sign and upload to TestFlight.
-# Needs repository secrets: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 (content of the .p8 file), APPLE_TEAM_ID.
+# Needs one repository secret: ASC_KEY_P8 (content of the App Store Connect .p8 key file).
 on:
   push:
     branches: [main]
     paths: ['ios-release.txt']
 permissions:
   contents: read
+env:
+  ASC_KEY_ID: 7M3S5D865D
+  ASC_ISSUER_ID: 8587971c-667e-4162-8c3c-14cdf056d569
+  TEAM: LN7Q2Y2LLT
 jobs:
   testflight:
     runs-on: macos-15
@@ -30,17 +34,12 @@ jobs:
       - name: App Store Connect key
         env:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
         run: |
           mkdir -p "$RUNNER_TEMP/keys"
           printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8"
           echo "BN=$(tr -dc 0-9 < ios-release.txt)" >> $GITHUB_ENV
       - name: Archive
         working-directory: app/ios/App
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          TEAM: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           set -o pipefail
           xcodebuild -project App.xcodeproj -scheme App -configuration Release \
@@ -52,10 +51,6 @@ jobs:
             archive | tail -40
       - name: Export and upload to TestFlight
         working-directory: app/ios/App
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          TEAM: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           set -o pipefail
           cat > "$RUNNER_TEMP/export.plist" <<PLIST
