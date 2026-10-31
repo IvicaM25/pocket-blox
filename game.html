@@ -665,13 +665,13 @@ trayEl.addEventListener('pointerdown',e=>{
   e.preventDefault();audio();
   if(rotMode){p.cells=rotate(p.cells);S.rot--;rotMode=false;tone([523,784],.05);if(!S.tray.some(t=>!t.used&&fitsAnywhere(t.cells)))checkStuck();else render();return}
   SFX.pick();
-  const cs=(boardEl.clientWidth-8)/N;const m=miniHTML(p);
+  const k=boardEl.getBoundingClientRect().width/boardEl.clientWidth||1,cs=(boardEl.clientWidth-8)/N*k;const m=miniHTML(p);
   floatEl=document.createElement('div');floatEl.className='fp blk c'+p.tex;
   floatEl.style.gridTemplateColumns=`repeat(${m.w},${cs}px)`;floatEl.innerHTML=m.html;
   floatEl.style.setProperty('--lcd',getComputedStyle(screenEl).getPropertyValue('--lcd'));
   floatEl.style.setProperty('--lcd-ink',getComputedStyle(screenEl).getPropertyValue('--lcd-ink'));
   document.body.appendChild(floatEl);
-  drag={i,p,cs,w:m.w,h:m.h,lift:e.pointerType==='touch'?cs*1.8:0};
+  drag={i,p,cs,k,w:m.w,h:m.h,lift:e.pointerType==='touch'?cs*1.8:0};
   slot.classList.add('lifting');onMove(e);
   window.addEventListener('pointermove',onMove);window.addEventListener('pointerup',onUp);window.addEventListener('pointercancel',onUp);
 });
@@ -679,7 +679,7 @@ function onMove(e){
   if(!drag)return;const{cs,w,h,lift}=drag;
   const x=e.clientX-w*cs/2,y=e.clientY-h*cs/2-lift;
   floatEl.style.transform=`translate(${x}px,${y}px)`;
-  const b=boardEl.getBoundingClientRect();const r=Math.round((y-b.top-4)/cs),c=Math.round((x-b.left-4)/cs);
+  const b=boardEl.getBoundingClientRect();const r=Math.round((y-b.top-4*drag.k)/cs),c=Math.round((x-b.left-4*drag.k)/cs);
   if(r<=-h||c<=-w||r>=N||c>=N)ghost=null;else ghost={cells:drag.p.cells,tex:drag.p.tex,r,c,ok:canPlace(drag.p.cells,r,c)};
   renderBoard();
 }
@@ -2745,6 +2745,15 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-lang]')){audio(
 async function recordLang(){try{const cap=await capDb();if(cap)await cap.db.doc('feedback/'+cap.id+'/meta/player').set({lang:LANG||'en',device:navigator.language||'',seen:new Date().toISOString()})}catch(e){}}
 if(I18N.hr){(async()=>{try{const u=window.claude&&window.claude.use?await window.claude.use('user'):null;ownerHR=!!(u&&await u.isOwner());if(S.state==='lang')renderLangs()}catch(e){}})()}
 
+/* ---------- big screens (tablets, desktop): grow the console to fill the height, centered ---------- */
+function fitConsole(){const c=document.querySelector('.console');if(!c)return;c.style.transform='';c.style.marginTop='';
+  const vw=innerWidth,vh=innerHeight;if(Math.min(vw,vh)<600)return;
+  const w=c.offsetWidth,h=c.offsetHeight,cs=getComputedStyle(document.body),pt=parseFloat(cs.paddingTop)||0,pb=parseFloat(cs.paddingBottom)||0;
+  const s=Math.min(2.4,(vw-48)/w,(vh-pt-pb)/h);if(s<=1.03)return;
+  c.style.transformOrigin='top center';c.style.transform='scale('+s.toFixed(3)+')';c.style.marginTop=Math.max(0,(vh-pt-pb-h*s)/2)+'px'}
+if(window.ResizeObserver){const c=document.querySelector('.console');if(c)new ResizeObserver(()=>fitConsole()).observe(c)}
+addEventListener('resize',fitConsole);addEventListener('orientationchange',()=>setTimeout(fitConsole,250));
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitConsole);setTimeout(fitConsole,0);setTimeout(fitConsole,800);
 /* ---------- boot (keeps a running game across page updates) ---------- */
 window.claude?.hot?.snapshot?.(()=>({S}));
 function start(data){if(data&&data.S&&data.S.grid){S=data.S;if(S.state==='play'||S.state==='ad')S.state='pause';if(S.state==='fb'||S.state==='home'||S.state==='lang')S.state='title';if(S.rot==null){S.rot=2;S.ads=0}if(S.ads==null)S.ads=S.adUsed?1:0;}applyLang();if(!LANG)S.state='lang',renderLangs();else recordLang();lbLoad();say(idleLine());render()}
