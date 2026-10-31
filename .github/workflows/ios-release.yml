@@ -48,7 +48,8 @@ jobs:
             -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" \
             -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             DEVELOPMENT_TEAM="$TEAM" CODE_SIGN_STYLE=Automatic CURRENT_PROJECT_VERSION="$BN" \
-            archive | tail -40
+            archive > "$RUNNER_TEMP/archive.log" 2>&1 || { grep -E "error|Error|warning: .*sign" "$RUNNER_TEMP/archive.log" | grep -v "^ld:" | head -25 | while IFS= read -r l; do echo "::error::$l"; done; tail -15 "$RUNNER_TEMP/archive.log"; exit 1; }
+          tail -5 "$RUNNER_TEMP/archive.log"
       - name: Export and upload to TestFlight
         working-directory: app/ios/App
         run: |
@@ -68,4 +69,5 @@ jobs:
             -exportOptionsPlist "$RUNNER_TEMP/export.plist" -exportPath "$RUNNER_TEMP/out" \
             -allowProvisioningUpdates \
             -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" \
-            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" | tail -40
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" > "$RUNNER_TEMP/export.log" 2>&1 || { grep -E "error|Error" "$RUNNER_TEMP/export.log" | head -25 | while IFS= read -r l; do echo "::error::$l"; done; tail -15 "$RUNNER_TEMP/export.log"; exit 1; }
+          tail -10 "$RUNNER_TEMP/export.log"
