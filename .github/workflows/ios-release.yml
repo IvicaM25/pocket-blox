@@ -36,7 +36,17 @@ jobs:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
         run: |
           mkdir -p "$RUNNER_TEMP/keys"
-          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8"
+          # Rebuild a clean PEM file: copying on iPad can turn line breaks into spaces.
+          python3 - "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" <<'PY'
+          import os,re,sys,base64,textwrap
+          raw=os.environ["ASC_KEY_P8"]
+          body=re.sub(r"-----(BEGIN|END)[A-Z ]*-----","",raw)
+          body=re.sub(r"[^A-Za-z0-9+/=]","",body)
+          base64.b64decode(body)  # fails loudly if the key text is incomplete
+          pem="-----BEGIN PRIVATE KEY-----\n"+"\n".join(textwrap.wrap(body,64))+"\n-----END PRIVATE KEY-----\n"
+          open(sys.argv[1],"w").write(pem)
+          print("key lines:",pem.count("\n"),"chars:",len(body))
+          PY
           echo "BN=$(tr -dc 0-9 < ios-release.txt)" >> $GITHUB_ENV
       - name: Archive
         working-directory: app/ios/App
