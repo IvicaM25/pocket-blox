@@ -1,5 +1,5 @@
 name: iOS TestFlight upload
-# Change ios-release.txt (one line: build number) to build, sign and upload to TestFlight.
+# Change ios-release.txt (one line: build number, add the word store for the App Store build with real ads) to build, sign and upload.
 # Needs one repository secret: ASC_KEY_P8 (content of the App Store Connect .p8 key file).
 on:
   push:
@@ -26,8 +26,10 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: app/package-lock.json
-      - name: Build web game with real ads
-        run: python3 build.py release
+      - name: Build web game (test ads for TestFlight, real ads only when ios-release.txt says "store")
+        run: |
+          if grep -qi store ios-release.txt; then python3 build.py release; else python3 build.py ci; fi
+          grep -o "testing:[a-z]*/\*TESTING\*/" app/www/index.html
       - name: Sync Capacitor
         working-directory: app
         run: npm ci && npx cap sync ios
